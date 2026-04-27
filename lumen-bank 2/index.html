@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Lumen" />
+<meta name="theme-color" content="#0a0a0c" />
+<meta name="color-scheme" content="dark only" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+<title>Lumen — Banking & Crypto</title>
+<style>
+:root{
+  color-scheme: dark only;
+  --bg: #0a0a0c;
+  --bg-2: #131316;
+  --surface: #1a1a1f;
+  --surface-2: #22222a;
+  --surface-3: #2a2a35;
+  --surface-4: #34343f;
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.12);
+  --text: #ffffff;
+  --text-2: #9ca3af;
+  --text-3: #6b7280;
+  --accent: #5b8def;
+  --accent-2: #8b5cf6;
+  --green: #10d97c;
+  --green-bg: rgba(16,217,124,0.12);
+  --red: #f43f5e;
+  --red-bg: rgba(244,63,94,0.12);
+  --orange: #fb923c;
+  --orange-bg: rgba(251,146,60,0.12);
+  --gold: #fbbf24;
+  --pink: #ec4899;
+  --cyan: #06b6d4;
+  --gradient-1: linear-gradient(135deg, #5b8def 0%, #8b5cf6 100%);
+  --gradient-2: linear-gradient(135deg, #10d97c 0%, #059669 100%);
+  --gradient-3: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  --gradient-platinum: linear-gradient(135deg, #e5e7eb 0%, #9ca3af 50%, #6b7280 100%);
+  --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  --gradient-card: linear-gradient(135deg, #1a1a1f 0%, #2a2a35 50%, #1a1a1f 100%);
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 24px 64px rgba(0,0,0,0.6);
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --safe-top: env(safe-area-inset-top);
+  --safe-bot: env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;overflow-x:hidden;background:var(--bg)}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;color:var(--text)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--border-strong)}
+
+/* ============ ANIMATIONS ============ */
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes flashGreen{0%,100%{color:#fff}50%{color:var(--green)}}
+@keyframes flashRed{0%,100%{color:#fff}50%{color:var(--red)}}
+@keyframes priceUp{0%,100%{background:transparent}30%{background:var(--green-bg)}}
+@keyframes priceDown{0%,100%{background:transparent}30%{background:var(--red-bg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes confetti{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--cx),var(--cy)) rotate(720deg);opacity:0}}
+@keyframes notifSlide{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes notifSlideOut{to{transform:translateX(120%);opacity:0}}
+
+/* ============ LOGIN ============ */
+.login-screen{
+  min-height:100vh;min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(24px + var(--safe-top)) 24px calc(24px + var(--safe-bot));
+  background:radial-gradient(circle at 20% 30%,rgba(91,141,239,0.18),transparent 50%),radial-gradient(circle at 80% 70%,rgba(139,92,246,0.18),transparent 50%),var(--bg);
+  position:relative;overflow:hidden;
+}
+.login-screen::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;
+  mask-image:radial-gradient(circle at center,black,transparent 70%);
+  -webkit-mask-image:radial-gradient(circle at center,black,transparent 70%);
+}
+.login-card{
+  width:100%;max-width:420px;background:var(--surface);
+  border-radius:var(--radius-lg);padding:40px 32px;
+  box-shadow:var(--shadow-lg);border:1px solid var(--border);
+  position:relative;z-index:1;animation:rise .6s cubic-bezier(.2,.8,.2,1);
+}
+.logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px}
+.logo-mark{
+  width:42px;height:42px;border-radius:12px;
+  background:var(--gradient-1);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:20px;letter-spacing:-0.04em;
+  box-shadow:0 4px 16px rgba(91,141,239,0.4);
+}
+.logo-text{font-size:24px;font-weight:700;letter-spacing:-0.03em;color:var(--text)}
+.login-title{font-size:30px;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:-0.03em;color:var(--text)}
+.login-sub{text-align:center;color:var(--text-2);font-size:15px;margin-bottom:32px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:8px;margin-left:4px;text-transform:uppercase;letter-spacing:0.05em}
+.field input,.field textarea{
+  width:100%;padding:14px 16px;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface-2);
+  font-size:15px;color:var(--text);outline:none;transition:.2s;
+}
+.field input:focus,.field textarea:focus{border-color:var(--accent);background:var(--surface-3);box-shadow:0 0 0 4px rgba(91,141,239,0.15)}
+.btn-primary{
+  width:100%;padding:14px;background:var(--gradient-1);color:#fff;
+  border-radius:var(--radius-sm);font-size:15px;font-weight:600;
+  margin-top:14px;transition:.2s;letter-spacing:0.01em;
+  box-shadow:0 4px 16px rgba(91,141,239,0.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(91,141,239,0.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-secondary{
+  width:100%;padding:14px;background:var(--surface-2);color:var(--text);
+  border-radius:var(--radius-sm);font-size:15px;font-weight:600;transition:.2s;
+}
+.btn-secondary:hover{background:var(--surface-3)}
+.btn-danger{background:var(--red-bg);color:var(--red)}
+.btn-danger:hover{background:rgba(244,63,94,0.2)}
+.login-error{padding:12px 14px;background:var(--red-bg);color:var(--red);border-radius:10px;font-size:13px;text-align:center;margin-bottom:14px;display:none}
+.login-error.show{display:block;animation:shake .4s}
+.login-foot{text-align:center;margin-top:24px;color:var(--text-3);font-size:12px}
+
+/* ============ APP SHELL ============ */
+.app{display:none;background:var(--bg)}
+.app.active{display:flex;flex-direction:column}
+.app-grid{display:grid;grid-template-columns:1fr;width:100%}
+
+.sidebar{
+  display:none;background:var(--bg-2);border-right:1px solid var(--border);
+  padding:24px 16px;flex-direction:column;gap:4px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar-brand{display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:24px}
+.sidebar-brand .logo-mark{width:36px;height:36px;font-size:16px;border-radius:10px}
+.sidebar-brand-text{font-size:18px;font-weight:700;letter-spacing:-0.02em}
+.sidebar-section{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;padding:14px 12px 6px;font-weight:600}
+.sidebar-item{
+  padding:11px 12px;border-radius:10px;display:flex;align-items:center;gap:12px;
+  font-size:14px;color:var(--text-2);transition:.15s;width:100%;text-align:left;font-weight:500;position:relative;
+}
+.sidebar-item:hover{background:var(--surface-2);color:var(--text)}
+.sidebar-item.active{background:var(--surface-2);color:var(--text)}
+.sidebar-item.active::before{content:'';position:absolute;left:0;width:3px;height:20px;background:var(--accent);border-radius:0 3px 3px 0}
+.sidebar-item svg{width:18px;height:18px;flex-shrink:0}
+.sidebar-item .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sidebar-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--border)}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:.15s}
+.sidebar-user:hover{background:var(--surface-2)}
+.sidebar-avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.sidebar-user-info{min-width:0;flex:1}
+.sidebar-user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-id{font-size:11px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tier-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-top:4px}
+.tier-badge.standard{background:var(--surface-3);color:var(--text-2)}
+.tier-badge.gold{background:var(--gradient-gold);color:#000}
+.tier-badge.platinum{background:var(--gradient-platinum);color:#000}
+
+.main-area{padding:0 0 80px;min-width:0;background:var(--bg);position:relative}
+
+/* Mobile topbar */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px calc(14px + var(--safe-top));
+  background:rgba(10,10,12,0.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.greet{font-size:13px;color:var(--text-2)}
+.greet strong{color:var(--text);font-weight:600}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;transition:.2s;color:var(--text);position:relative;border:1px solid var(--border)}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn svg{width:18px;height:18px}
+.topbar-actions{display:flex;gap:8px}
+.notif-dot{position:absolute;top:6px;right:6px;min-width:14px;height:14px;border-radius:7px;background:var(--red);border:2px solid var(--bg);display:none;font-size:9px;font-weight:700;color:#fff;align-items:center;justify-content:center;padding:0 3px}
+.notif-dot.show{display:flex}
+
+/* Desktop header */
+.desktop-header{display:none;padding:24px 32px 0;align-items:center;justify-content:space-between;gap:20px}
+.desktop-header h1{font-size:28px;font-weight:700;letter-spacing:-0.03em}
+.desktop-header-actions{display:flex;gap:10px;align-items:center}
+.search-bar-top{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;width:280px}
+.search-bar-top svg{width:16px;height:16px;color:var(--text-3);flex-shrink:0}
+.search-bar-top input{flex:1;border:none;background:transparent;outline:none;font-size:14px;color:var(--text);min-width:0}
+.search-bar-top input::placeholder{color:var(--text-3)}
+
+.views{flex:1;background:var(--bg);position:relative}
+.view{display:none;padding:20px;width:100%;animation:slideIn .25s cubic-bezier(.2,.8,.2,1)}
+.view.active{display:block}
+
+/* Section heading */
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px}
+.section-title{font-size:16px;font-weight:600;letter-spacing:-0.01em}
+.section-link{font-size:13px;color:var(--text-2);font-weight:500;cursor:pointer;background:none;border:none;transition:.15s;white-space:nowrap}
+.section-link:hover{color:var(--text)}
+.live-tag{font-size:10px;color:var(--text-2);display:flex;align-items:center;text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
+.refresh-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+.refresh-dot.stale{background:var(--orange)}
+.refresh-dot.error{background:var(--red);animation:none}
+
+/* ============ HOME GRID ============ */
+.home-grid{display:grid;grid-template-columns:1fr;gap:20px}
+
+/* Hero card */
+.hero-card{
+  position:relative;border-radius:24px;overflow:hidden;background:var(--gradient-card);
+  padding:24px;color:#fff;box-shadow:var(--shadow);border:1px solid var(--border-strong);
+}
+.hero-card-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 0% 0%,rgba(91,141,239,0.25),transparent 50%),radial-gradient(circle at 100% 100%,rgba(251,191,36,0.15),transparent 50%);
+}
+.hero-balance-row{display:flex;justify-content:space-between;align-items:flex-start;position:relative;margin-bottom:16px}
+.hero-balance-label{font-size:12px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.hero-balance-amount{font-size:42px;font-weight:700;letter-spacing:-0.04em;font-variant-numeric:tabular-nums;line-height:1;color:#fff;display:inline-block;transition:color .4s}
+.hero-balance-amount.flash-up{animation:flashGreen .8s}
+.hero-balance-amount.flash-down{animation:flashRed .8s}
+.hero-balance-amount .cents{font-size:0.55em;color:var(--text-2);font-weight:600}
+.hero-balance-sub{font-size:13px;color:var(--text-2);margin-top:8px}
+.hero-change-pill{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:100px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.hero-change-pill.pos{background:var(--green-bg);color:var(--green)}
+.hero-change-pill.neg{background:var(--red-bg);color:var(--red)}
+
+.card-mini{
+  position:absolute;right:24px;top:24px;width:140px;aspect-ratio:1.586/1;
+  background:linear-gradient(135deg,#000,#1a1a1f);border-radius:12px;padding:10px;
+  border:1px solid var(--border-strong);display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);transition:transform .3s;
+}
+.card-mini:hover{transform:scale(1.05) rotate(-2deg)}
+.card-mini-brand{font-size:8px;letter-spacing:0.1em;font-weight:600;opacity:0.8}
+.card-mini-num{font-size:9px;letter-spacing:0.15em;font-variant-numeric:tabular-nums;opacity:0.9}
+.card-mini-bot{display:flex;justify-content:space-between;align-items:flex-end}
+.card-mini-name{font-size:7px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.85}
+.card-mini-visa{font-size:11px;font-weight:800;font-style:italic;letter-spacing:-0.02em}
+@media(max-width:520px){.card-mini{display:none}}
+
+/* Action buttons */
+.actions-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;position:relative}
+.action-btn{background:var(--surface);border:1px solid var(--border);padding:14px 8px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:.2s;color:var(--text)}
+.action-btn:hover{transform:translateY(-2px);background:var(--surface-2);border-color:var(--border-strong)}
+.action-btn:active{transform:translateY(0) scale(.97)}
+.action-btn-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+.action-btn-icon svg{width:18px;height:18px}
+.action-btn-icon.send{background:var(--gradient-1)}
+.action-btn-icon.recv{background:var(--gradient-2)}
+.action-btn-icon.exch{background:var(--gradient-3)}
+.action-btn-icon.topup{background:linear-gradient(135deg,var(--accent-2),var(--pink))}
+.action-btn-icon.invest{background:linear-gradient(135deg,var(--cyan),var(--accent))}
+.action-btn-icon.bills{background:var(--orange)}
+.action-btn-icon.goal{background:linear-gradient(135deg,var(--accent-2),var(--pink))}
+.action-btn-label{font-size:12px;font-weight:500}
+
+/* Chart */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative}
+.chart-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.chart-head-info{flex:1;min-width:0}
+.chart-title{font-size:13px;color:var(--text-2);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.chart-value{font-size:24px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.chart-change{font-size:13px;margin-top:4px;font-variant-numeric:tabular-nums;font-weight:500}
+.chart-change.pos{color:var(--green)}
+.chart-change.neg{color:var(--red)}
+.chart-tabs{display:flex;gap:2px;background:var(--surface-2);border-radius:8px;padding:3px;flex-shrink:0}
+.chart-tab{padding:6px 10px;font-size:12px;font-weight:500;border-radius:6px;color:var(--text-2);transition:.15s}
+.chart-tab.active{background:var(--surface-3);color:var(--text)}
+.chart-svg{width:100%;height:140px;display:block;cursor:crosshair}
+
+/* Crypto / asset list */
+.crypto-list,.tx-list,.settings-list,.account-list,.stock-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.crypto-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border);transition:background .15s;width:100%;text-align:left;cursor:pointer;color:var(--text)}
+.crypto-row:last-child{border-bottom:none}
+.crypto-row:hover{background:var(--surface-2)}
+.crypto-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;letter-spacing:-0.02em}
+.crypto-info{min-width:0}
+.crypto-name{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.crypto-meta{font-size:12px;color:var(--text-2);display:flex;gap:6px;align-items:center;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.crypto-change.pos{color:var(--green)}
+.crypto-change.neg{color:var(--red)}
+.crypto-bal{text-align:right}
+.crypto-bal-amt{font-weight:500;font-size:14px;font-variant-numeric:tabular-nums;color:var(--text)}
+.crypto-bal-usd{font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.crypto-bal-amt.zero,.crypto-bal-usd.zero{color:var(--text-3)}
+.price-flash-up{animation:priceUp .8s}
+.price-flash-down{animation:priceDown .8s}
+.mini-spark{width:60px;height:24px;flex-shrink:0}
+
+/* TX rows */
+.tx-row{display:grid;grid-template-columns:40px 1fr auto;gap:12px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border);animation:slideIn .3s}
+.tx-row:last-child{border-bottom:none}
+.tx-row.fresh{background:rgba(91,141,239,0.05)}
+.tx-icon{width:40px;height:40px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;overflow:hidden}
+.tx-icon svg{width:18px;height:18px}
+.tx-icon.in{background:var(--green-bg);color:var(--green)}
+.tx-icon.out{background:var(--red-bg);color:var(--red)}
+.tx-icon.swap{background:rgba(91,141,239,0.15);color:var(--accent)}
+.tx-icon.bill{background:var(--orange-bg);color:var(--orange)}
+.tx-icon.savings{background:rgba(139,92,246,0.15);color:var(--accent-2)}
+.tx-icon.invest{background:rgba(6,182,212,0.15);color:var(--cyan)}
+.tx-icon.merchant-icon{background:var(--surface-3);color:var(--text)}
+.tx-title{font-weight:500;font-size:14px;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tx-cat-tag{font-size:10px;background:var(--surface-3);color:var(--text-2);padding:2px 6px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;font-weight:600}
+.tx-date{font-size:12px;color:var(--text-2)}
+.tx-amount{font-weight:500;font-variant-numeric:tabular-nums;text-align:right;font-size:14px;color:var(--text)}
+.tx-amount.pos{color:var(--green)}
+.tx-amount.neg{color:var(--red)}
+.tx-amount-sub{font-size:11px;color:var(--text-3);font-weight:400;margin-top:2px}
+.tx-empty{padding:48px 20px;text-align:center;color:var(--text-3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.tx-empty svg{width:64px;height:64px;opacity:0.4}
+
+/* Stat cards */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:.2s;text-align:left;color:var(--text);position:relative;overflow:hidden;display:block}
+.stat-card:hover{transform:translateY(-2px);background:var(--surface-2);border-color:var(--border-strong)}
+.stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat-icon svg{width:18px;height:18px}
+.stat-label{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:4px}
+.stat-value{font-size:18px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:var(--text)}
+.stat-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+
+/* Top movers */
+.movers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mover-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:.15s;text-align:left;width:100%}
+.mover-card:hover{background:var(--surface-2);transform:translateY(-1px)}
+.mover-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mover-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;flex-shrink:0}
+.mover-sym{font-size:13px;font-weight:600;color:var(--text)}
+.mover-price{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.mover-change{font-size:11px;font-variant-numeric:tabular-nums;font-weight:600;margin-top:2px}
+.mover-change.pos{color:var(--green)}
+.mover-change.neg{color:var(--red)}
+
+/* Right rail */
+.right-rail{display:none;background:var(--bg-2);border-left:1px solid var(--border);padding:24px 20px;gap:20px;flex-direction:column;overflow-y:auto;position:sticky;top:0;height:100vh}
+.rail-section{display:flex;flex-direction:column;gap:12px}
+
+/* Bottom nav */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(10,10,12,0.92);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-top:1px solid var(--border);display:none;justify-content:space-around;
+  padding:8px 0 calc(8px + var(--safe-bot));z-index:100;
+}
+.app.active .bottom-nav{display:flex}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;color:var(--text-3);transition:color .2s;position:relative}
+.nav-item.active{color:var(--text)}
+.nav-item svg{width:22px;height:22px;transition:transform .2s}
+.nav-item.active svg{transform:scale(1.1)}
+.nav-label{font-size:10px;font-weight:500}
+
+/* DESKTOP layout */
+@media (min-width:900px){
+  .app-grid{grid-template-columns:240px 1fr 320px}
+  .sidebar{display:flex}
+  .desktop-header{display:flex}
+  .topbar{display:none}
+  .bottom-nav{display:none!important}
+  .right-rail{display:flex}
+  .main-area{padding:0 0 32px}
+  .view{padding:24px 32px}
+  .home-grid{grid-template-columns:1fr 1fr;gap:20px}
+  .home-grid > .full{grid-column:1/-1}
+  .actions-row{grid-template-columns:repeat(6,1fr)}
+  .hero-balance-amount{font-size:48px}
+  .chart-svg{height:200px}
+}
+@media (min-width:1280px){
+  .app-grid{grid-template-columns:260px 1fr 360px}
+  .home-grid{gap:24px}
+  .hero-balance-amount{font-size:56px}
+}
+
+@media (max-width:899px){
+  .right-rail,.sidebar{display:none}
+  .main-area{padding-bottom:calc(80px + var(--safe-bot))}
+  .view{padding:16px}
+}
+@media (max-width:380px){
+  .hero-balance-amount{font-size:34px}
+  .actions-row{gap:8px}
+  .action-btn{padding:12px 4px}
+  .action-btn-label{font-size:11px}
+}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end;justify-content:center;animation:fadeIn .2s}
+.modal-bg.show{display:flex}
+@media(min-width:600px){.modal-bg{align-items:center}}
+.modal{
+  background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:480px;
+  padding:24px 24px calc(24px + var(--safe-bot));max-height:90vh;overflow-y:auto;color:var(--text);
+  animation:slideUp .3s cubic-bezier(.2,.8,.2,1);border:1px solid var(--border);
+}
+@media(min-width:600px){.modal{border-radius:24px;max-height:80vh}}
+.modal-handle{width:38px;height:4px;border-radius:2px;background:var(--border-strong);margin:-8px auto 16px}
+.modal-title{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px;color:var(--text)}
+.modal-sub{font-size:14px;color:var(--text-2);margin-bottom:24px}
+.input-block{background:var(--surface-2);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:12px;border:1px solid transparent;transition:.2s}
+.input-block:focus-within{border-color:var(--accent);background:var(--surface-3)}
+.input-block label{font-size:11px;color:var(--text-2);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.input-block input,.input-block select,.input-block textarea{width:100%;border:none;background:transparent;font-size:16px;color:var(--text);outline:none;font-weight:500;font-variant-numeric:tabular-nums;resize:none}
+.input-block select{cursor:pointer}
+.err-text{color:var(--red);font-size:13px;margin:8px 4px 0;display:none}
+.err-text.show{display:block}
+.swap-arrow{display:flex;justify-content:center;margin:-2px 0;position:relative;z-index:1}
+.swap-arrow button{width:36px;height:36px;border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;transition:.3s;color:var(--text)}
+.swap-arrow button:hover{transform:rotate(180deg)}
+.swap-arrow svg{width:16px;height:16px}
+.quote-line{font-size:13px;color:var(--text-2);text-align:center;margin:10px 0 16px;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:6px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:100px;font-size:12px;font-weight:500;white-space:nowrap;color:var(--text-2);transition:.15s}
+.chip.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.chip:hover:not(.active){background:var(--surface-3);color:var(--text)}
+
+/* Settings list */
+.settings-item{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);width:100%;text-align:left;transition:background .15s;color:var(--text)}
+.settings-item:last-child{border:none}
+.settings-item:hover{background:var(--surface-2)}
+.settings-item-label{font-size:14px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
+.settings-item-val{font-size:13px;color:var(--text-2)}
+.settings-item.danger .settings-item-label{color:var(--red)}
+
+/* Goal */
+.goal-card{background:var(--gradient-1);border-radius:var(--radius);padding:18px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
+.goal-card::before{content:'';position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.goal-name{font-size:13px;opacity:0.9;margin-bottom:4px;position:relative;font-weight:500}
+.goal-amounts{font-size:22px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;position:relative}
+.goal-amounts span{font-size:14px;opacity:0.7;font-weight:500}
+.goal-bar{height:6px;background:rgba(255,255,255,0.2);border-radius:3px;margin-top:14px;overflow:hidden;position:relative}
+.goal-bar-fill{height:100%;background:#fff;border-radius:3px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.goal-pct{font-size:11px;opacity:0.85;margin-top:8px;position:relative;font-weight:500}
+
+/* QR */
+.qr-box{background:#fff;padding:20px;border-radius:var(--radius);margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.qr-svg{width:200px;height:200px;image-rendering:pixelated}
+.qr-label{font-size:13px;color:#000;text-align:center;font-weight:500}
+
+/* Donut */
+.donut-wrap{display:flex;gap:20px;align-items:center;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.donut-svg{width:120px;height:120px;flex-shrink:0}
+.donut-legend{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.legend-label{flex:1;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend-val{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Toast */
+.toast{position:fixed;bottom:calc(96px + var(--safe-bot));left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);color:var(--text);padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:300;opacity:0;pointer-events:none;transition:.3s;box-shadow:var(--shadow-lg);white-space:nowrap;max-width:calc(100vw - 40px);overflow:hidden;text-overflow:ellipsis;border:1px solid var(--border-strong)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green);color:#000;border-color:var(--green)}
+.toast.error{background:var(--red);color:#fff;border-color:var(--red)}
+@media(min-width:900px){.toast{bottom:32px}}
+
+/* Toggle */
+.toggle-wrap{position:relative;width:44px;height:26px;cursor:pointer;flex-shrink:0}
+.toggle-slider{position:absolute;inset:0;background:var(--surface-3);border-radius:13px;transition:.2s}
+.toggle-slider.on{background:var(--green)}
+.toggle-knob{position:absolute;left:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.toggle-knob.on{left:21px}
+
+/* News ticker */
+.ticker{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;overflow:hidden}
+.ticker-label{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;flex-shrink:0;background:rgba(91,141,239,0.15);padding:4px 8px;border-radius:6px}
+.ticker-content{flex:1;font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.ticker-track{display:inline-block;animation:tickerScroll 50s linear infinite;padding-left:100%}
+.ticker-track span{margin:0 24px;color:var(--text-2)}
+.ticker-track strong{color:var(--text);font-weight:600}
+.ticker-track .pos{color:var(--green)}
+.ticker-track .neg{color:var(--red)}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* Watchlist */
+.watchlist-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.watchlist-row:last-child{border:none}
+.watchlist-sym{display:flex;align-items:center;gap:8px}
+.watchlist-sym .crypto-icon{width:24px;height:24px;font-size:10px}
+.watchlist-name{font-weight:500;color:var(--text)}
+.watchlist-price{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.watchlist-ch{font-size:11px;font-variant-numeric:tabular-nums;font-weight:500}
+.watchlist-ch.pos{color:var(--green)}
+.watchlist-ch.neg{color:var(--red)}
+
+/* Card view */
+.card-big-wrap{perspective:1200px;max-width:480px;margin:0 auto 24px}
+.card-big{aspect-ratio:1.586/1;border-radius:20px;background:linear-gradient(135deg,#1a1a1f 0%,#2a2a35 50%,#1a1a1f 100%);color:#fff;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.6);border:1px solid var(--border-strong);transition:transform .6s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.card-big.flipped{transform:rotateY(180deg)}
+.card-big.platinum{background:var(--gradient-platinum);color:#000}
+.card-big.gold{background:var(--gradient-gold);color:#000}
+.card-big-face{position:absolute;inset:0;padding:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;overflow:hidden}
+.card-big-face::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(91,141,239,0.2),transparent 50%),radial-gradient(circle at 80% 100%,rgba(251,191,36,0.15),transparent 50%);pointer-events:none}
+.card-big.platinum .card-big-face::before,.card-big.gold .card-big-face::before{background:radial-gradient(circle at 20% 0%,rgba(255,255,255,0.4),transparent 50%),radial-gradient(circle at 80% 100%,rgba(0,0,0,0.1),transparent 50%)}
+.card-big-back{transform:rotateY(180deg);display:flex;flex-direction:column}
+.card-big-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative}
+.card-big-brand{font-size:13px;font-weight:600;letter-spacing:0.08em;opacity:0.95}
+.card-big-chip{width:38px;height:30px;border-radius:5px;background:linear-gradient(135deg,#fbbf24,#d97706 50%,#92400e);position:relative}
+.card-big-chip::after{content:'';position:absolute;inset:4px;border:1px solid rgba(0,0,0,0.2);border-radius:3px;background-image:linear-gradient(rgba(0,0,0,0.15) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.15) 1px,transparent 1px);background-size:6px 6px}
+.card-big-num{position:absolute;bottom:74px;left:24px;right:24px;font-size:20px;letter-spacing:0.18em;font-weight:500;font-variant-numeric:tabular-nums}
+.card-big-bot{position:absolute;bottom:24px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:flex-end}
+.card-big-name{font-size:14px;text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
+.card-big-exp{font-size:10px;opacity:0.7;text-transform:uppercase;letter-spacing:0.08em;margin-top:6px}
+.card-big-exp strong{font-size:13px;opacity:1;font-weight:500}
+.card-big-visa{font-size:24px;font-weight:800;font-style:italic;letter-spacing:-0.02em}
+.card-big-flip-btn{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;z-index:10;border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(8px)}
+.card-big-flip-btn:hover{background:rgba(255,255,255,0.2)}
+.card-big-flip-btn svg{width:14px;height:14px}
+.card-magnetic{background:#000;height:48px;margin:14px -24px 18px}
+.card-cvv-strip{background:rgba(255,255,255,0.85);color:#000;padding:10px 14px;border-radius:4px;display:flex;justify-content:space-between;align-items:center;font-size:13px;letter-spacing:0.1em;font-family:'SF Mono',Menlo,monospace}
+.card-back-text{font-size:9px;opacity:0.7;line-height:1.5;margin-top:auto}
+
+/* Budget bars */
+.budget-row{padding:14px 16px;border-bottom:1px solid var(--border)}
+.budget-row:last-child{border:none}
+.budget-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.budget-name{font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
+.budget-name-emoji{font-size:18px}
+.budget-amt{font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.budget-amt strong{color:var(--text);font-weight:600}
+.budget-bar{height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.budget-bar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+
+/* Stocks */
+.stock-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border);transition:background .15s;width:100%;text-align:left;cursor:pointer;color:var(--text)}
+.stock-row:last-child{border-bottom:none}
+.stock-row:hover{background:var(--surface-2)}
+.stock-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;letter-spacing:-0.02em}
+.stock-info{min-width:0}
+.stock-sym{font-weight:600;font-size:14px;color:var(--text)}
+.stock-name{font-size:11px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stock-bal{text-align:right}
+.stock-price{font-weight:500;font-size:14px;font-variant-numeric:tabular-nums;color:var(--text)}
+.stock-change{font-size:12px;font-variant-numeric:tabular-nums}
+.stock-change.pos{color:var(--green)}
+.stock-change.neg{color:var(--red)}
+
+/* Portfolio summary card */
+.portfolio-summary{background:var(--gradient-1);border-radius:var(--radius);padding:20px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden}
+.portfolio-summary::before{content:'';position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.portfolio-summary-label{font-size:12px;opacity:0.85;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;position:relative}
+.portfolio-summary-amt{font-size:32px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:6px;position:relative}
+.portfolio-summary-pl{font-size:14px;opacity:0.95;margin-top:4px;font-variant-numeric:tabular-nums;position:relative}
+.portfolio-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;position:relative}
+.portfolio-summary-stat{background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px;backdrop-filter:blur(8px)}
+.portfolio-summary-stat-label{font-size:10px;opacity:0.85;text-transform:uppercase;letter-spacing:0.06em;font-weight:600}
+.portfolio-summary-stat-val{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+
+/* Rewards */
+.tier-card{background:var(--gradient-platinum);border-radius:var(--radius);padding:24px;color:#000;margin-bottom:20px;position:relative;overflow:hidden}
+.tier-card.standard{background:linear-gradient(135deg,#374151 0%,#1f2937 100%);color:#fff}
+.tier-card.gold{background:var(--gradient-gold);color:#000}
+.tier-card-label{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;opacity:0.85}
+.tier-card-name{font-size:30px;font-weight:800;letter-spacing:-0.03em;margin-top:4px}
+.tier-card-points{font-size:14px;margin-top:8px;font-variant-numeric:tabular-nums;opacity:0.9}
+.tier-progress{height:6px;background:rgba(0,0,0,0.15);border-radius:3px;margin-top:18px;overflow:hidden}
+.tier-card.standard .tier-progress{background:rgba(255,255,255,0.2)}
+.tier-progress-fill{height:100%;background:#000;border-radius:3px}
+.tier-card.standard .tier-progress-fill{background:#fff}
+.tier-progress-label{font-size:11px;margin-top:8px;opacity:0.8}
+.perks-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.perk-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center}
+.perk-emoji{font-size:24px;flex-shrink:0}
+.perk-info{flex:1;min-width:0}
+.perk-name{font-size:14px;font-weight:600;color:var(--text)}
+.perk-desc{font-size:12px;color:var(--text-2);margin-top:2px}
+.perk-status{font-size:11px;font-weight:600;padding:4px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em}
+.perk-status.active{background:var(--green-bg);color:var(--green)}
+.perk-status.locked{background:var(--surface-3);color:var(--text-3)}
+
+/* Subscription rows */
+.sub-row{display:grid;grid-template-columns:40px 1fr auto;gap:12px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border)}
+.sub-row:last-child{border-bottom:none}
+.sub-icon{width:40px;height:40px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sub-info{min-width:0}
+.sub-name{font-weight:500;font-size:14px;color:var(--text)}
+.sub-meta{font-size:12px;color:var(--text-2)}
+.sub-amt{text-align:right;font-variant-numeric:tabular-nums}
+.sub-amt-val{font-weight:600;font-size:14px;color:var(--text)}
+.sub-amt-period{font-size:11px;color:var(--text-3)}
+
+/* Notification toast (auto-arriving txns) */
+.notif-toast-wrap{position:fixed;top:calc(20px + var(--safe-top));right:20px;z-index:400;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.notif-toast{
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:14px;padding:12px 14px;
+  box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;
+  min-width:260px;max-width:320px;animation:notifSlide .35s cubic-bezier(.2,.8,.2,1);
+  pointer-events:auto;cursor:pointer;
+}
+.notif-toast.removing{animation:notifSlideOut .25s forwards}
+.notif-toast-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.notif-toast-info{flex:1;min-width:0}
+.notif-toast-title{font-size:13px;font-weight:600;color:var(--text)}
+.notif-toast-body{font-size:12px;color:var(--text-2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notif-toast-amt{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0}
+.notif-toast-amt.pos{color:var(--green)}
+.notif-toast-amt.neg{color:var(--red)}
+@media(max-width:520px){
+  .notif-toast-wrap{top:calc(70px + var(--safe-top));right:10px;left:10px}
+  .notif-toast{min-width:0;max-width:none}
+}
+
+/* Confetti */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:500;overflow:hidden}
+.confetti-piece{position:absolute;width:8px;height:14px;animation:confetti 1.5s ease-out forwards}
+
+/* Onboarding */
+.onboard-overlay{position:fixed;inset:0;background:rgba(10,10,12,0.95);backdrop-filter:blur(20px);z-index:900;display:none;align-items:center;justify-content:center;padding:24px}
+.onboard-overlay.show{display:flex}
+.onboard-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;max-width:440px;width:100%;animation:rise .4s}
+.onboard-step-dots{display:flex;gap:6px;margin-bottom:24px;justify-content:center}
+.onboard-dot{width:6px;height:6px;border-radius:3px;background:var(--surface-3);transition:.2s}
+.onboard-dot.active{width:24px;background:var(--accent)}
+
+/* Skeleton */
+.skel{background:linear-gradient(90deg,var(--surface-2) 25%,var(--surface-3) 50%,var(--surface-2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:14px}
+
+/* Empty illustrations */
+.empty-illust{width:80px;height:80px;display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--surface-2);border-radius:20px;margin-bottom:8px}
+
+/* Stock candle */
+.candle-svg{width:100%;height:200px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="logo"><div class="logo-mark">L</div><div class="logo-text">Lumen</div></div>
+    <h1 class="login-title">Welcome back</h1>
+    <p class="login-sub">Sign in to your Lumen account</p>
+    <div id="loginErr" class="login-error">Incorrect username or password</div>
+    <form id="loginForm" autocomplete="off">
+      <div class="field"><label for="username">Username</label><input type="text" id="username" autocapitalize="none" autocorrect="off" spellcheck="false" /></div>
+      <div class="field"><label for="password">Password</label><input type="password" id="password" autocomplete="current-password" /></div>
+      <button type="submit" class="btn-primary">Sign In</button>
+    </form>
+    <p class="login-foot">Lumen Bank · Demo</p>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div class="onboard-overlay" id="onboardOverlay">
+  <div class="onboard-card" id="onboardCard"></div>
+</div>
+
+<!-- APP -->
+<div id="app" class="app">
+  <div class="app-grid">
+
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo-mark">L</div><div class="sidebar-brand-text">Lumen</div></div>
+
+      <button class="sidebar-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+      <button class="sidebar-item" data-view="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>Wallet</button>
+      <button class="sidebar-item" data-view="invest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Invest</button>
+      <button class="sidebar-item" data-view="markets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>Markets</button>
+      <button class="sidebar-item" data-view="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Activity</button>
+      <button class="sidebar-item" data-view="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3"/><path d="M9 9h2v8H9zM5 13h2v4H5zM13 5h2v12h-2zM17 9h2v8h-2z"/></svg>Analytics</button>
+
+      <div class="sidebar-section">Money</div>
+      <button class="sidebar-item" data-action="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send</button>
+      <button class="sidebar-item" data-action="receive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>Receive</button>
+      <button class="sidebar-item" data-action="exchange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Exchange</button>
+      <button class="sidebar-item" data-action="bills"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Pay bill</button>
+
+      <div class="sidebar-section">Manage</div>
+      <button class="sidebar-item" data-view="budgets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Budgets</button>
+      <button class="sidebar-item" data-view="recurring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Subscriptions</button>
+      <button class="sidebar-item" data-view="rewards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Rewards</button>
+      <button class="sidebar-item" data-view="cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Cards</button>
+      <button class="sidebar-item" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+
+      <div class="sidebar-foot">
+        <div class="sidebar-user" id="sidebarUser">
+          <div class="sidebar-avatar">DH</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Dema Hot</div>
+            <div class="sidebar-user-id" id="sidebarTier">LMN-2026-0042</div>
+          </div>
+          <button class="icon-btn" id="logoutBtnDesktop" style="margin-left:auto;width:32px;height:32px;flex-shrink:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="logo-mark" style="width:32px;height:32px;font-size:14px;border-radius:8px">L</div>
+          <div class="greet">Hello, <strong>DemaHot</strong></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="notifBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="notif-dot" id="notifDot"></span>
+          </button>
+          <button class="icon-btn" id="logoutBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="desktop-header">
+        <div>
+          <h1 id="viewTitle">Dashboard</h1>
+          <p style="color:var(--text-2);font-size:14px;margin-top:4px" id="viewSubtitle">Welcome back, Dema</p>
+        </div>
+        <div class="desktop-header-actions">
+          <div class="search-bar-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="globalSearch" placeholder="Search transactions, assets..." />
+          </div>
+          <button class="icon-btn" id="notifBtnDesktop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="notif-dot" id="notifDotDesktop"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="views">
+        <!-- HOME -->
+        <section class="view active" id="view-home">
+          <div class="ticker" style="margin-bottom:20px">
+            <div class="ticker-label">● LIVE</div>
+            <div class="ticker-content"><div class="ticker-track" id="tickerTrack">Loading market data...</div></div>
+          </div>
+
+          <div class="home-grid">
+            <div class="full">
+              <div class="hero-card">
+                <div class="hero-card-bg"></div>
+                <div class="card-mini" id="cardMiniHero">
+                  <div class="card-mini-brand">LUMEN</div>
+                  <div><div class="card-mini-num">4842 ••••</div><div class="card-mini-num">•••• 7391</div></div>
+                  <div class="card-mini-bot"><div class="card-mini-name">D. HOT</div><div class="card-mini-visa">VISA</div></div>
+                </div>
+                <div class="hero-balance-row">
+                  <div>
+                    <div class="hero-balance-label">Total balance <span id="tierBadgeWrap"></span></div>
+                    <div class="hero-balance-amount" id="totalBal">$0<span class="cents">.00</span></div>
+                    <div class="hero-balance-sub">USD <span id="usdBalSub">$0.00</span> · Crypto <span id="cryptoBalSub">$0.00</span> · Stocks <span id="stockBalSub">$0.00</span></div>
+                    <div style="margin-top:14px"><span class="hero-change-pill" id="totalChangePill">+0.00%</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="full">
+              <div class="actions-row">
+                <button class="action-btn" data-action="send"><div class="action-btn-icon send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div><div class="action-btn-label">Send</div></button>
+                <button class="action-btn" data-action="receive"><div class="action-btn-icon recv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></div><div class="action-btn-label">Receive</div></button>
+                <button class="action-btn" data-action="exchange"><div class="action-btn-icon exch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div><div class="action-btn-label">Exchange</div></button>
+                <button class="action-btn" data-action="topup"><div class="action-btn-icon topup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div class="action-btn-label">Top up</div></button>
+                <button class="action-btn" data-action="invest"><div class="action-btn-icon invest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div><div class="action-btn-label">Invest</div></button>
+                <button class="action-btn" data-action="bills"><div class="action-btn-icon bills"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="action-btn-label">Pay bill</div></button>
+              </div>
+            </div>
+
+            <div class="full">
+              <div class="chart-card">
+                <div class="chart-head">
+                  <div class="chart-head-info">
+                    <div class="chart-title">Net worth</div>
+                    <div class="chart-value" id="sparkValue">$0.00</div>
+                    <div class="chart-change" id="sparkChange">—</div>
+                  </div>
+                  <div class="chart-tabs" id="chartTabs">
+                    <button class="chart-tab active" data-period="24h">24H</button>
+                    <button class="chart-tab" data-period="7d">7D</button>
+                    <button class="chart-tab" data-period="1m">1M</button>
+                    <button class="chart-tab" data-period="all">All</button>
+                  </div>
+                </div>
+                <svg class="chart-svg" id="sparkSvg" viewBox="0 0 600 200" preserveAspectRatio="none"></svg>
+              </div>
+            </div>
+
+            <div>
+              <div class="section-head"><div class="section-title">Top movers</div><button class="section-link" data-view-jump="markets">View all →</button></div>
+              <div class="movers-grid" id="topMovers"></div>
+            </div>
+
+            <div>
+              <div class="section-head"><div class="section-title">Quick actions</div></div>
+              <div class="stat-grid">
+                <button class="stat-card" data-action="bills"><div class="stat-icon" style="background:var(--orange-bg);color:var(--orange)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="stat-label">Pay bill</div><div class="stat-value">Quick pay</div><div class="stat-sub">Electric · Internet · Rent</div></button>
+                <button class="stat-card" data-action="goal"><div class="stat-icon" style="background:rgba(139,92,246,0.15);color:var(--accent-2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="stat-label">Savings goal</div><div class="stat-value" id="goalStat">—</div><div class="stat-sub" id="goalStatSub">Set a goal</div></button>
+              </div>
+            </div>
+
+            <div class="full">
+              <div class="section-head"><div class="section-title">Your assets</div><div class="live-tag"><span class="refresh-dot" id="liveDot"></span><span id="liveStatus">Live</span></div></div>
+              <div class="crypto-list" id="cryptoList"></div>
+            </div>
+
+            <div class="full">
+              <div class="section-head"><div class="section-title">Recent activity</div><button class="section-link" data-view-jump="activity">View all →</button></div>
+              <div class="tx-list" id="recentTxList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- WALLET -->
+        <section class="view" id="view-wallet">
+          <div class="section-head" style="margin-bottom:20px"><div><div class="section-title" style="font-size:22px">Wallet</div><div style="color:var(--text-2);font-size:13px;margin-top:4px">All your accounts in one place</div></div></div>
+          <div class="account-list" id="accountList"></div>
+        </section>
+
+        <!-- INVEST -->
+        <section class="view" id="view-invest">
+          <div class="section-head" style="margin-bottom:14px"><div class="section-title" style="font-size:22px">Invest</div><div class="live-tag"><span class="refresh-dot"></span>Live</div></div>
+          <div class="portfolio-summary" id="portfolioSummary"></div>
+          <div class="section-head" style="margin-top:24px"><div class="section-title">Your holdings</div></div>
+          <div class="stock-list" id="myStocksList" style="margin-bottom:24px"></div>
+          <div class="section-head"><div class="section-title">Popular stocks</div></div>
+          <div class="chips" style="margin-bottom:14px">
+            <button class="chip active" data-stock-cat="all">All</button>
+            <button class="chip" data-stock-cat="tech">Tech</button>
+            <button class="chip" data-stock-cat="finance">Finance</button>
+            <button class="chip" data-stock-cat="auto">Auto</button>
+            <button class="chip" data-stock-cat="retail">Retail</button>
+          </div>
+          <div class="stock-list" id="stocksList"></div>
+        </section>
+
+        <!-- MARKETS -->
+        <section class="view" id="view-markets">
+          <div class="section-head" style="margin-bottom:16px"><div class="section-title" style="font-size:22px">Markets</div><div class="live-tag"><span class="refresh-dot"></span>Live</div></div>
+          <div class="chips" style="margin-bottom:16px">
+            <button class="chip active" data-market-sort="cap">Top</button>
+            <button class="chip" data-market-sort="gainers">Gainers</button>
+            <button class="chip" data-market-sort="losers">Losers</button>
+          </div>
+          <div class="crypto-list" id="marketsList"></div>
+        </section>
+
+        <!-- ACTIVITY -->
+        <section class="view" id="view-activity">
+          <div class="section-head" style="margin-bottom:16px"><div class="section-title" style="font-size:22px">Activity</div></div>
+          <div class="search-bar-top" style="width:100%;max-width:none;margin-bottom:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="txSearch" placeholder="Search transactions..." /></div>
+          <div class="chips">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="in">Income</button>
+            <button class="chip" data-filter="out">Spending</button>
+            <button class="chip" data-filter="exchange">Exchanges</button>
+            <button class="chip" data-filter="invest">Investing</button>
+            <button class="chip" data-filter="bill">Bills</button>
+          </div>
+          <div class="tx-list" id="allTxList"></div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section class="view" id="view-analytics">
+          <div class="section-head" style="margin-bottom:16px"><div class="section-title" style="font-size:22px">Analytics</div></div>
+          <div id="analyticsBody"></div>
+        </section>
+
+        <!-- BUDGETS -->
+        <section class="view" id="view-budgets">
+          <div class="section-head" style="margin-bottom:16px"><div class="section-title" style="font-size:22px">Budgets</div><button class="section-link" id="addBudgetBtn">+ Add</button></div>
+          <div id="budgetSummary" style="margin-bottom:16px"></div>
+          <div class="settings-list" id="budgetList"></div>
+        </section>
+
+        <!-- RECURRING -->
+        <section class="view" id="view-recurring">
+          <div class="section-head" style="margin-bottom:16px"><div class="section-title" style="font-size:22px">Subscriptions</div></div>
+          <div id="recurringSummary" style="margin-bottom:16px"></div>
+          <div class="settings-list" id="recurringList"></div>
+        </section>
+
+        <!-- REWARDS -->
+        <section class="view" id="view-rewards">
+          <div class="section-head" style="margin-bottom:16px"><div class="section-title" style="font-size:22px">Rewards</div></div>
+          <div id="tierCardWrap"></div>
+          <div class="section-head" style="margin-top:24px"><div class="section-title">Your perks</div></div>
+          <div class="perks-grid" id="perksGrid"></div>
+          <div class="section-head" style="margin-top:24px"><div class="section-title">Recent cashback</div></div>
+          <div class="tx-list" id="cashbackList"></div>
+        </section>
+
+        <!-- CARDS -->
+        <section class="view" id="view-cards">
+          <div class="section-head" style="margin-bottom:20px"><div class="section-title" style="font-size:22px">Cards</div></div>
+          <div class="card-big-wrap"><div class="card-big" id="cardBigEl">
+            <div class="card-big-face">
+              <button class="card-big-flip-btn" id="flipBtn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/></svg></button>
+              <div class="card-big-top"><div class="card-big-brand" id="cardBrand">LUMEN PLATINUM</div><div class="card-big-chip"></div></div>
+              <div class="card-big-num">4842 •••• •••• 7391</div>
+              <div class="card-big-bot"><div><div class="card-big-name">Dema Hot</div><div class="card-big-exp">VALID THRU <strong>09/29</strong></div></div><div class="card-big-visa">VISA</div></div>
+            </div>
+            <div class="card-big-face card-big-back">
+              <button class="card-big-flip-btn" id="flipBackBtn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+              <div class="card-magnetic"></div>
+              <div class="card-cvv-strip"><span>4842 1739 8821 7391</span><span><strong>CVV 482</strong></span></div>
+              <div class="card-back-text">This card is the property of Lumen Bank, N.A.</div>
+            </div>
+          </div></div>
+          <div style="max-width:480px;margin:0 auto">
+            <div class="settings-list" style="margin-bottom:16px">
+              <div class="settings-item"><span class="settings-item-label">Status</span><span class="settings-item-val" id="cardStatus" style="color:var(--green)">● Active</span></div>
+              <div class="settings-item"><span class="settings-item-label">Daily limit</span><span class="settings-item-val">$5,000</span></div>
+              <div class="settings-item"><span class="settings-item-label">Spent this month</span><span class="settings-item-val" id="cardSpent">$0.00</span></div>
+              <div class="settings-item"><span class="settings-item-label">CVV</span><span class="settings-item-val">482</span></div>
+            </div>
+            <div class="settings-list">
+              <button class="settings-item" id="freezeCardBtn"><span class="settings-item-label" id="freezeCardLabel">❄️ Freeze card</span><span class="settings-item-val">→</span></button>
+              <button class="settings-item" data-action="receive"><span class="settings-item-label">📋 Show details</span><span class="settings-item-val">→</span></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view" id="view-settings">
+          <div class="section-head" style="margin-bottom:20px"><div class="section-title" style="font-size:22px">Settings</div></div>
+          <div style="max-width:560px">
+            <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin:0 0 10px 4px">Account</div>
+            <div class="settings-list" style="margin-bottom:20px">
+              <div class="settings-item"><span class="settings-item-label">Username</span><span class="settings-item-val">DemaHot</span></div>
+              <div class="settings-item"><span class="settings-item-label">Account ID</span><span class="settings-item-val">LMN-2026-0042</span></div>
+              <div class="settings-item"><span class="settings-item-label">Currency</span><span class="settings-item-val">USD</span></div>
+              <div class="settings-item"><span class="settings-item-label">Member since</span><span class="settings-item-val">April 2026</span></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin:0 0 10px 4px">Preferences</div>
+            <div class="settings-list" style="margin-bottom:20px">
+              <button class="settings-item" data-action="goal"><span class="settings-item-label">🎯 Savings goal</span><span class="settings-item-val" id="setGoal">→</span></button>
+              <div class="settings-item"><span class="settings-item-label">Hide balance</span><div class="toggle-wrap" id="hideBalToggle"><div class="toggle-slider" id="hideBalSlider"></div><div class="toggle-knob" id="hideBalKnob"></div></div></div>
+              <div class="settings-item"><span class="settings-item-label">Live notifications</span><div class="toggle-wrap" id="autoTxToggle"><div class="toggle-slider on" id="autoTxSlider"></div><div class="toggle-knob on" id="autoTxKnob"></div></div></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin:0 0 10px 4px">Demo</div>
+            <div class="settings-list">
+              <button class="settings-item" id="seedDataBtn"><span class="settings-item-label" style="color:var(--accent)">⚡ Seed sample data</span></button>
+              <button class="settings-item" id="resetBtn"><span class="settings-item-label" style="color:var(--accent)">Reset demo data</span></button>
+              <button class="settings-item danger" id="signOutBtn"><span class="settings-item-label">Sign out</span></button>
+            </div>
+            <p style="text-align:center;color:var(--text-3);font-size:11px;margin-top:24px">Lumen Bank · Demo · Live data via CoinGecko / Binance / Coinbase / Yahoo</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <aside class="right-rail">
+      <div class="rail-section">
+        <div class="section-head" style="margin-bottom:8px"><div class="section-title" style="font-size:14px">Watchlist</div></div>
+        <div id="watchlist" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px"></div>
+      </div>
+      <div class="rail-section">
+        <div class="section-head" style="margin-bottom:8px"><div class="section-title" style="font-size:14px">Recent activity</div></div>
+        <div class="tx-list" id="railTxList"></div>
+      </div>
+      <div class="rail-section">
+        <div class="section-head" style="margin-bottom:8px"><div class="section-title" style="font-size:14px">Spending this month</div></div>
+        <div id="railSpending" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px"></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-view="invest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg><span class="nav-label">Invest</span></button>
+    <button class="nav-item" data-view="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span class="nav-label">Activity</span></button>
+    <button class="nav-item" data-view="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3"/><path d="M9 9h2v8H9zM5 13h2v4H5zM13 5h2v12h-2zM17 9h2v8h-2z"/></svg><span class="nav-label">Stats</span></button>
+    <button class="nav-item" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg><span class="nav-label">More</span></button>
+  </nav>
+</div>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+<div class="notif-toast-wrap" id="notifToastWrap"></div>
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script>
+/* ========================================================================
+   LUMEN v4 - Banking & Investing Demo
+   Single-file PWA. Live crypto + stock data, auto-arriving transactions,
+   budgets, analytics, rewards, subscriptions.
+   ======================================================================== */
+
+const VALID_USER = "DemaHot";
+const VALID_PASS = "Carmi101@";
+const SESSION_KEY = "lumen_session_v1";
+const STATE_KEY = "lumen_state_v4";
+
+/* ---------- CRYPTOS ---------- */
+const CRYPTOS = [
+  { id:"bitcoin",     symbol:"BTC",  binance:"BTCUSDT", name:"Bitcoin",  color:"#f7931a" },
+  { id:"ethereum",    symbol:"ETH",  binance:"ETHUSDT", name:"Ethereum", color:"#627eea" },
+  { id:"tether",      symbol:"USDT", binance:null,      name:"Tether",   color:"#26a17b", fixed:1 },
+  { id:"binancecoin", symbol:"BNB",  binance:"BNBUSDT", name:"BNB",      color:"#f0b90b" },
+  { id:"solana",      symbol:"SOL",  binance:"SOLUSDT", name:"Solana",   color:"#9945ff" },
+  { id:"ripple",      symbol:"XRP",  binance:"XRPUSDT", name:"XRP",      color:"#23292f" },
+  { id:"cardano",     symbol:"ADA",  binance:"ADAUSDT", name:"Cardano",  color:"#0033ad" },
+  { id:"dogecoin",    symbol:"DOGE", binance:"DOGEUSDT",name:"Dogecoin", color:"#c2a633" },
+  { id:"tron",        symbol:"TRX",  binance:"TRXUSDT", name:"TRON",     color:"#ef0027" },
+  { id:"polkadot",    symbol:"DOT",  binance:"DOTUSDT", name:"Polkadot", color:"#e6007a" }
+];
+
+/* ---------- STOCKS ---------- */
+const STOCKS = [
+  { symbol:"AAPL",  name:"Apple Inc.",            cat:"tech",    color:"#000000", basePrice:228.50 },
+  { symbol:"MSFT",  name:"Microsoft Corp.",       cat:"tech",    color:"#0078d4", basePrice:425.30 },
+  { symbol:"GOOGL", name:"Alphabet Inc.",         cat:"tech",    color:"#4285f4", basePrice:175.82 },
+  { symbol:"AMZN",  name:"Amazon.com Inc.",       cat:"retail",  color:"#ff9900", basePrice:198.45 },
+  { symbol:"NVDA",  name:"NVIDIA Corp.",          cat:"tech",    color:"#76b900", basePrice:142.18 },
+  { symbol:"META",  name:"Meta Platforms",        cat:"tech",    color:"#1877f2", basePrice:582.10 },
+  { symbol:"TSLA",  name:"Tesla Inc.",            cat:"auto",    color:"#cc0000", basePrice:340.92 },
+  { symbol:"JPM",   name:"JPMorgan Chase",        cat:"finance", color:"#003594", basePrice:248.66 },
+  { symbol:"V",     name:"Visa Inc.",             cat:"finance", color:"#1a1f71", basePrice:312.40 },
+  { symbol:"NFLX",  name:"Netflix Inc.",          cat:"tech",    color:"#e50914", basePrice:892.45 },
+  { symbol:"DIS",   name:"Walt Disney Co.",       cat:"retail",  color:"#011a4f", basePrice:115.83 },
+  { symbol:"BRK.B", name:"Berkshire Hathaway",    cat:"finance", color:"#0066b3", basePrice:478.20 }
+];
+
+/* ---------- MERCHANTS for auto-transactions ---------- */
+const MERCHANTS = [
+  { name:"Starbucks",       emoji:"☕", category:"Food & Drink",  min:4.5,  max:9.5,  weight:8 },
+  { name:"Tim Hortons",     emoji:"🍩", category:"Food & Drink",  min:3.2,  max:12,   weight:6 },
+  { name:"McDonald's",      emoji:"🍟", category:"Food & Drink",  min:7,    max:18,   weight:5 },
+  { name:"Subway",          emoji:"🥪", category:"Food & Drink",  min:9,    max:16,   weight:4 },
+  { name:"Chipotle",        emoji:"🌯", category:"Food & Drink",  min:11,   max:22,   weight:3 },
+  { name:"DoorDash",        emoji:"🛵", category:"Food & Drink",  min:18,   max:48,   weight:5 },
+  { name:"Uber Eats",       emoji:"🍱", category:"Food & Drink",  min:15,   max:42,   weight:4 },
+  { name:"Whole Foods",     emoji:"🥬", category:"Groceries",    min:35,   max:120,  weight:3 },
+  { name:"Costco",          emoji:"📦", category:"Groceries",    min:80,   max:240,  weight:2 },
+  { name:"Walmart",         emoji:"🛒", category:"Groceries",    min:25,   max:130,  weight:3 },
+  { name:"Uber",            emoji:"🚗", category:"Transport",    min:8,    max:32,   weight:5 },
+  { name:"Lyft",            emoji:"🚙", category:"Transport",    min:9,    max:28,   weight:3 },
+  { name:"Shell",           emoji:"⛽", category:"Transport",    min:42,   max:78,   weight:3 },
+  { name:"Spotify",         emoji:"🎵", category:"Subscription", min:11.99,max:11.99,weight:1, sub:true, period:"monthly" },
+  { name:"Netflix",         emoji:"🎬", category:"Subscription", min:15.49,max:15.49,weight:1, sub:true, period:"monthly" },
+  { name:"Apple",           emoji:"🍎", category:"Subscription", min:0.99, max:9.99, weight:2 },
+  { name:"Amazon",          emoji:"📦", category:"Shopping",     min:18,   max:165,  weight:5 },
+  { name:"Best Buy",        emoji:"💻", category:"Shopping",     min:42,   max:380,  weight:1 },
+  { name:"Target",          emoji:"🎯", category:"Shopping",     min:22,   max:105,  weight:3 },
+  { name:"Nike",            emoji:"👟", category:"Shopping",     min:65,   max:185,  weight:1 },
+  { name:"H&M",             emoji:"👕", category:"Shopping",     min:25,   max:88,   weight:2 },
+  { name:"AMC Theatres",    emoji:"🎬", category:"Entertainment",min:14,   max:38,   weight:1 },
+  { name:"PlayStation",     emoji:"🎮", category:"Entertainment",min:9.99, max:69.99,weight:1 },
+  { name:"Bell Canada",     emoji:"📱", category:"Bills",        min:78,   max:78,   weight:1, sub:true, period:"monthly" },
+  { name:"Hydro One",       emoji:"⚡", category:"Bills",        min:62,   max:128,  weight:1, sub:true, period:"monthly" },
+];
+
+const INCOMES = [
+  { source:"Acme Corp Payroll", amount:2450, period:"biweekly", emoji:"💼" },
+  { source:"Stripe — Client refund", amount:35, weight:1, emoji:"💰" },
+  { source:"Etsy sale", amount:42, weight:1, emoji:"🎁" },
+  { source:"Cashback rebate", amount:8.5, weight:2, emoji:"💸" },
+];
+
+const CATEGORIES = {
+  "Food & Drink": { emoji:"🍔", color:"#fb923c" },
+  "Groceries":    { emoji:"🛒", color:"#10d97c" },
+  "Transport":    { emoji:"🚗", color:"#5b8def" },
+  "Subscription": { emoji:"📺", color:"#8b5cf6" },
+  "Shopping":     { emoji:"🛍️", color:"#ec4899" },
+  "Entertainment":{ emoji:"🎬", color:"#f43f5e" },
+  "Bills":        { emoji:"⚡", color:"#fbbf24" },
+  "Transfers":    { emoji:"💸", color:"#06b6d4" },
+  "Savings":      { emoji:"🎯", color:"#a855f7" },
+  "Investing":    { emoji:"📈", color:"#06b6d4" }
+};
+
+/* ---------- DEFAULT STATE ---------- */
+const DEFAULT_STATE = {
+  usd: 10000,
+  holdings: { BTC:0.32, ETH:3, USDT:0, BNB:0, SOL:0, XRP:0, ADA:0, DOGE:0, TRX:0, DOT:0 },
+  stocks: {}, // {symbol: {qty, costBasis}}
+  transactions: [],
+  cardFrozen: false,
+  hideBalance: false,
+  goal: null,
+  history: [],
+  notifications: [],
+  watchlist: ["BTC","ETH","SOL"],
+  budgets: [],
+  rewardsPoints: 0,
+  cashbackEarned: 0,
+  autoTransactions: true,
+  onboarded: false,
+  firstLogin: Date.now()
+};
+
+let state = loadState();
+let prices = {};
+let prevPrices = {};
+let priceHistory = {};
+let stockPrices = {};
+let stockHistory = {};
+let lastFetchOk = null;
+let txFilter = "all";
+let txSearchTerm = "";
+let prevTotal = null;
+let chartPeriod = "24h";
+let marketsSort = "cap";
+let stockCat = "all";
+
+/* ---------- STATE I/O ---------- */
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STATE_KEY);
+    if(!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    const p = JSON.parse(raw);
+    for(const k of Object.keys(DEFAULT_STATE)){
+      if(!(k in p)) p[k] = JSON.parse(JSON.stringify(DEFAULT_STATE[k]));
+    }
+    for(const c of CRYPTOS) if(!(c.symbol in p.holdings)) p.holdings[c.symbol] = 0;
+    return p;
+  }catch(e){return JSON.parse(JSON.stringify(DEFAULT_STATE));}
+}
+function saveState(){try{localStorage.setItem(STATE_KEY, JSON.stringify(state));}catch(e){}}
+function resetState(){state = JSON.parse(JSON.stringify(DEFAULT_STATE)); saveState();}
+
+/* ---------- FORMATTERS ---------- */
+function fmtUSD(n,d=2){
+  if(n===null||n===undefined||isNaN(n)) return "$0.00";
+  return "$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+function fmtPrice(n){if(n>=1) return fmtUSD(n,2); if(n>=0.01) return fmtUSD(n,4); return fmtUSD(n,6);}
+function fmtCrypto(n,sym){
+  if(n===0) return "0 "+sym;
+  if(n<0.0001) return n.toFixed(8)+" "+sym;
+  if(n<1) return n.toFixed(6)+" "+sym;
+  return n.toLocaleString("en-US",{maximumFractionDigits:4})+" "+sym;
+}
+function fmtChange(c){if(c===null||c===undefined||isNaN(c)) return "—"; return (c>=0?"+":"")+c.toFixed(2)+"%";}
+function shortDate(ts){
+  const d = new Date(ts), now = new Date();
+  if(d.toDateString()===now.toDateString()) return "Today, "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  const y = new Date(now); y.setDate(now.getDate()-1);
+  if(d.toDateString()===y.toDateString()) return "Yesterday, "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  return d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+", "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+}
+function getCSS(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#000";}
+
+/* ---------- COMPUTED ---------- */
+function cryptoUsdValue(sym){return (state.holdings[sym]||0)*(prices[sym]?.usd||0);}
+function totalCryptoUsd(){return CRYPTOS.reduce((s,c)=>s+cryptoUsdValue(c.symbol),0);}
+function totalStockUsd(){
+  let v = 0;
+  for(const sym of Object.keys(state.stocks)){
+    const h = state.stocks[sym];
+    if(!h) continue;
+    const p = stockPrices[sym]?.usd || 0;
+    v += h.qty * p;
+  }
+  return v;
+}
+function totalStockCostBasis(){
+  let v = 0;
+  for(const sym of Object.keys(state.stocks)){
+    const h = state.stocks[sym];
+    if(!h) continue;
+    v += h.qty * h.costBasis;
+  }
+  return v;
+}
+function totalUsd(){return state.usd + totalCryptoUsd() + totalStockUsd();}
+function portfolioChangePct(){
+  const tot = totalUsd();
+  if(tot<=0) return 0;
+  let w = 0;
+  for(const c of CRYPTOS){
+    const v = cryptoUsdValue(c.symbol), ch = prices[c.symbol]?.change||0;
+    w += (v/tot)*ch;
+  }
+  for(const sym of Object.keys(state.stocks)){
+    const h = state.stocks[sym];
+    if(!h) continue;
+    const p = stockPrices[sym]?.usd || 0, ch = stockPrices[sym]?.change || 0;
+    w += ((h.qty * p)/tot)*ch;
+  }
+  return w;
+}
+function monthlySpent(){
+  const now = new Date();
+  let t = 0;
+  for(const tx of state.transactions){
+    const d = new Date(tx.ts);
+    if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear() && tx.direction==="out" && tx.symbol==="USD") t += tx.amount;
+  }
+  return t;
+}
+function monthlySpentByCategory(){
+  const now = new Date();
+  const cats = {};
+  for(const tx of state.transactions){
+    const d = new Date(tx.ts);
+    if(d.getMonth()!==now.getMonth() || d.getFullYear()!==now.getFullYear()) continue;
+    if(tx.direction!=="out" || tx.symbol!=="USD") continue;
+    const c = tx.category || "Transfers";
+    cats[c] = (cats[c]||0) + tx.amount;
+  }
+  return cats;
+}
+function getTier(){
+  const p = state.rewardsPoints || 0;
+  if(p >= 5000) return "platinum";
+  if(p >= 1500) return "gold";
+  return "standard";
+}
+function getNextTier(){
+  const p = state.rewardsPoints || 0;
+  if(p < 1500) return {name:"Gold", needed:1500 - p, total:1500};
+  if(p < 5000) return {name:"Platinum", needed:5000 - p, total:5000 - 1500};
+  return null;
+}
+
+/* ---------- CRYPTO PRICE FETCHING (3-source fallback) ---------- */
+async function fetchFromCoinGecko(){
+  const ids = CRYPTOS.map(c=>c.id).join(",");
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+  const res = await fetch(url,{cache:"no-store"});
+  if(!res.ok) throw new Error("coingecko "+res.status);
+  const data = await res.json();
+  const out = {};
+  for(const c of CRYPTOS){
+    const d = data[c.id];
+    if(d && d.usd) out[c.symbol] = {usd:d.usd, change:d.usd_24h_change||0};
+  }
+  if(Object.keys(out).length<5) throw new Error("incomplete");
+  return out;
+}
+async function fetchFromBinance(){
+  const symbols = JSON.stringify(CRYPTOS.filter(c=>c.binance).map(c=>c.binance));
+  const url = `https://api.binance.com/api/v3/ticker/24hr?symbols=${encodeURIComponent(symbols)}`;
+  const res = await fetch(url,{cache:"no-store"});
+  if(!res.ok) throw new Error("binance "+res.status);
+  const data = await res.json();
+  const out = {USDT:{usd:1,change:0}};
+  for(const item of data){
+    const c = CRYPTOS.find(x=>x.binance===item.symbol);
+    if(c) out[c.symbol] = {usd:parseFloat(item.lastPrice), change:parseFloat(item.priceChangePercent)||0};
+  }
+  if(Object.keys(out).length<5) throw new Error("incomplete");
+  return out;
+}
+async function fetchFromCoinbase(){
+  const out = {USDT:{usd:1,change:0}};
+  const list = CRYPTOS.filter(c=>!c.fixed);
+  const results = await Promise.all(list.map(async c=>{
+    try{
+      const r = await fetch(`https://api.coinbase.com/v2/prices/${c.symbol}-USD/spot`,{cache:"no-store"});
+      if(!r.ok) return null;
+      const j = await r.json();
+      return {symbol:c.symbol, usd:parseFloat(j.data.amount)};
+    }catch(e){return null;}
+  }));
+  for(const r of results) if(r) out[r.symbol] = {usd:r.usd, change:0};
+  if(Object.keys(out).length<5) throw new Error("incomplete");
+  return out;
+}
+const FALLBACK = {BTC:67000, ETH:3500, USDT:1, BNB:600, SOL:145, XRP:0.55, ADA:0.42, DOGE:0.16, TRX:0.13, DOT:7.5};
+
+async function fetchPrices(){
+  prevPrices = {...prices};
+  const sources = [fetchFromCoinGecko, fetchFromBinance, fetchFromCoinbase];
+  for(const src of sources){
+    try{
+      const r = await src();
+      for(const c of CRYPTOS) if(r[c.symbol]) prices[c.symbol] = r[c.symbol];
+      lastFetchOk = Date.now();
+      for(const c of CRYPTOS){
+        if(!priceHistory[c.symbol]) priceHistory[c.symbol] = [];
+        priceHistory[c.symbol].push(prices[c.symbol].usd);
+        if(priceHistory[c.symbol].length > 30) priceHistory[c.symbol].shift();
+      }
+      updateLiveStatus("ok");
+      return true;
+    }catch(e){console.warn("source failed:",e.message);}
+  }
+  if(Object.keys(prices).length===0){
+    for(const c of CRYPTOS) prices[c.symbol] = {usd:FALLBACK[c.symbol], change:0};
+  }
+  updateLiveStatus(lastFetchOk ? "stale" : "error");
+  return false;
+}
+
+/* ---------- STOCK PRICE SIMULATION ---------- */
+/* Stocks use a deterministic-ish random walk seeded by base price. Real APIs
+   require keys/CORS proxy, so we simulate plausible market motion locally. */
+function tickStocks(){
+  for(const s of STOCKS){
+    if(!stockPrices[s.symbol]){
+      // initial: randomize ±2% from base
+      const start = s.basePrice * (1 + (Math.random()-0.5)*0.04);
+      stockPrices[s.symbol] = {usd:start, change:0, prevClose:s.basePrice, baseStart:start};
+      stockHistory[s.symbol] = [start];
+    } else {
+      const cur = stockPrices[s.symbol];
+      // small random walk: ±0.3% per tick, mean-reverting toward base
+      const drift = (s.basePrice - cur.usd) * 0.001;
+      const noise = (Math.random()-0.5) * cur.usd * 0.006;
+      const newPrice = Math.max(0.01, cur.usd + drift + noise);
+      cur.usd = newPrice;
+      cur.change = ((newPrice - cur.prevClose)/cur.prevClose)*100;
+      stockHistory[s.symbol].push(newPrice);
+      if(stockHistory[s.symbol].length > 60) stockHistory[s.symbol].shift();
+    }
+  }
+}
+
+function updateLiveStatus(s){
+  document.querySelectorAll(".refresh-dot").forEach(d=>{
+    d.classList.remove("stale","error");
+    if(s==="stale") d.classList.add("stale");
+    if(s==="error") d.classList.add("error");
+  });
+  const status = document.getElementById("liveStatus");
+  if(status) status.textContent = s==="ok" ? "Live" : (s==="stale" ? "Cached" : "Offline");
+}
+
+/* ---------- HISTORY ---------- */
+function recordHistoryPoint(){
+  const t = totalUsd();
+  if(!t) return;
+  state.history.push({t:Date.now(), total:t});
+  if(state.history.length > 200) state.history = state.history.slice(-200);
+  saveState();
+}
+
+/* ---------- AUTO-ARRIVING TRANSACTIONS ---------- */
+function pickWeighted(arr){
+  const total = arr.reduce((s,x)=>s+(x.weight||1),0);
+  let r = Math.random()*total;
+  for(const x of arr){r -= (x.weight||1); if(r<=0) return x;}
+  return arr[arr.length-1];
+}
+
+function generateAutoTransaction(){
+  if(!state.autoTransactions) return;
+  if(state.cardFrozen) return;
+
+  // 80% chance of expense, 20% income
+  const isIncome = Math.random() < 0.20;
+
+  if(isIncome){
+    // small random income
+    const candidates = INCOMES.filter(i => !i.period); // skip biweekly here
+    const inc = pickWeighted(candidates);
+    const amt = +(inc.amount * (0.8 + Math.random()*0.4)).toFixed(2);
+    state.usd += amt;
+    state.transactions.unshift({
+      id: Date.now(), ts: Date.now(),
+      type:"topup", direction:"in", title: inc.source,
+      symbol:"USD", amount: amt,
+      emoji: inc.emoji, category: "Transfers"
+    });
+    pushNotif(`${fmtUSD(amt)} from ${inc.source}`);
+    showNotifToast({title:inc.source, body:"Deposit received", amount:amt, isPos:true, emoji:inc.emoji});
+  } else {
+    if(state.usd < 5) return; // skip if too low
+    const m = pickWeighted(MERCHANTS);
+    let amt = +(m.min + Math.random()*(m.max - m.min)).toFixed(2);
+    if(amt > state.usd) amt = +(state.usd * 0.3).toFixed(2);
+    if(amt < 1) return;
+    state.usd -= amt;
+
+    // cashback (1% standard, 2% gold, 3% platinum)
+    const tier = getTier();
+    const cbRate = tier === "platinum" ? 0.03 : tier === "gold" ? 0.02 : 0.01;
+    const cashback = +(amt * cbRate).toFixed(2);
+    state.cashbackEarned += cashback;
+    state.rewardsPoints += Math.floor(amt); // 1pt per $
+
+    state.transactions.unshift({
+      id: Date.now(), ts: Date.now(),
+      type:"send", direction:"out", title: m.name,
+      recipient: m.name, symbol:"USD", amount: amt,
+      emoji: m.emoji, category: m.category, cashback,
+      auto: true
+    });
+    pushNotif(`${m.name}: ${fmtUSD(amt)}`);
+    showNotifToast({title:m.name, body:m.category, amount:amt, isPos:false, emoji:m.emoji});
+  }
+
+  saveState();
+  renderAll();
+}
+
+/* schedule biweekly paycheck if not seen recently */
+function maybePaycheck(){
+  const now = Date.now();
+  const last = state.transactions.find(t => t.title === "Acme Corp Payroll");
+  const TWO_WEEKS = 14*24*60*60*1000;
+  if(!last || (now - last.ts) >= TWO_WEEKS - 60000){
+    // For demo realism, give first paycheck 30s after first login
+    const sinceLogin = now - state.firstLogin;
+    if(!last && sinceLogin < 25000) return; // wait ~25s before first
+    const inc = INCOMES[0]; // payroll
+    state.usd += inc.amount;
+    state.transactions.unshift({
+      id: Date.now(), ts: Date.now(),
+      type:"topup", direction:"in", title: inc.source,
+      symbol:"USD", amount: inc.amount, emoji: inc.emoji, category:"Transfers"
+    });
+    pushNotif(`Paycheck: ${fmtUSD(inc.amount)}`);
+    showNotifToast({title:"Paycheck", body:inc.source, amount:inc.amount, isPos:true, emoji:inc.emoji});
+    triggerConfetti();
+    saveState(); renderAll();
+  }
+}
+
+/* ---------- CHART RENDERING ---------- */
+function renderSparkline(){
+  const svg = document.getElementById("sparkSvg");
+  const valueEl = document.getElementById("sparkValue");
+  const changeEl = document.getElementById("sparkChange");
+  if(!svg) return;
+  const now = Date.now();
+  const periods = {"24h":24*60*60*1000, "7d":7*24*60*60*1000, "1m":30*24*60*60*1000, "all":Infinity};
+  const cutoff = now - (periods[chartPeriod]||periods["24h"]);
+  let data = state.history.filter(d=>d.t >= cutoff);
+  if(data.length < 2) data = state.history.slice();
+
+  const t = totalUsd();
+  valueEl.textContent = state.hideBalance ? "••••••" : fmtUSD(t);
+  if(data.length<2){
+    svg.innerHTML = `<text x="300" y="100" text-anchor="middle" fill="${getCSS('--text-3')}" font-size="13">Building chart history — refreshes every 30 seconds</text>`;
+    changeEl.textContent = "—";
+    return;
+  }
+  const vals = data.map(d=>d.total);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const range = max-min || 1;
+  const W = 600, H = 200, pad = 8;
+  const points = data.map((d,i)=>[
+    pad + (i/(data.length-1))*(W-pad*2),
+    H - pad - ((d.total-min)/range)*(H-pad*2)
+  ]);
+  const first = data[0].total, last = data[data.length-1].total;
+  const pct = first ? ((last-first)/first)*100 : 0;
+  const isUp = last >= first;
+  const color = isUp ? getCSS('--green') : getCSS('--red');
+  changeEl.style.color = color;
+  changeEl.textContent = fmtChange(pct);
+  let path = `M ${points[0][0]} ${points[0][1]}`;
+  for(let i=1;i<points.length;i++){
+    const [x,y] = points[i], [px,py] = points[i-1];
+    const cx = (px+x)/2;
+    path += ` Q ${cx} ${py}, ${cx} ${(py+y)/2} T ${x} ${y}`;
+  }
+  const lastX = points[points.length-1][0], firstX = points[0][0];
+  const area = path + ` L ${lastX} ${H} L ${firstX} ${H} Z`;
+  svg.innerHTML = `
+    <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#sg)"/>
+    <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${points[points.length-1][0]}" cy="${points[points.length-1][1]}" r="4" fill="${color}"/>
+    <circle cx="${points[points.length-1][0]}" cy="${points[points.length-1][1]}" r="8" fill="${color}" opacity="0.3"/>
+  `;
+}
+
+function miniSpark(arr, color){
+  if(!arr || arr.length<2) return '<svg class="mini-spark" viewBox="0 0 60 24"></svg>';
+  const min = Math.min(...arr), max = Math.max(...arr), range = max-min || 1;
+  const pts = arr.map((v,i)=>[
+    (i/(arr.length-1))*60,
+    24 - ((v-min)/range)*22 - 1
+  ]);
+  let path = `M ${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<pts.length;i++) path += ` L ${pts[i][0]} ${pts[i][1]}`;
+  return `<svg class="mini-spark" viewBox="0 0 60 24" preserveAspectRatio="none"><path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+/* ---------- NOTIF TOAST (top-right slide-ins) ---------- */
+function showNotifToast({title, body, amount, isPos, emoji}){
+  const wrap = document.getElementById("notifToastWrap");
+  if(!wrap) return;
+  const el = document.createElement("div");
+  el.className = "notif-toast";
+  el.innerHTML = `
+    <div class="notif-toast-icon" style="background:${isPos?'var(--green-bg)':'var(--surface-2)'}">${emoji||(isPos?'💰':'🛒')}</div>
+    <div class="notif-toast-info">
+      <div class="notif-toast-title">${title}</div>
+      <div class="notif-toast-body">${body}</div>
+    </div>
+    <div class="notif-toast-amt ${isPos?'pos':'neg'}">${isPos?'+':'−'}${fmtUSD(amount)}</div>
+  `;
+  el.onclick = () => {el.classList.add("removing"); setTimeout(()=>el.remove(),250);};
+  wrap.appendChild(el);
+  setTimeout(()=>{
+    el.classList.add("removing");
+    setTimeout(()=>el.remove(), 250);
+  }, 4500);
+  // limit to 3 visible
+  while(wrap.children.length > 3){wrap.firstChild.remove();}
+}
+
+/* ---------- CONFETTI ---------- */
+function triggerConfetti(){
+  const wrap = document.getElementById("confettiWrap");
+  if(!wrap) return;
+  const colors = ["#5b8def","#10d97c","#fbbf24","#ec4899","#8b5cf6","#06b6d4"];
+  const burst = 40;
+  const cx = window.innerWidth/2, cy = window.innerHeight/2;
+  for(let i=0;i<burst;i++){
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    const angle = (Math.PI*2*i)/burst + Math.random()*0.5;
+    const dist = 200 + Math.random()*300;
+    piece.style.setProperty("--cx", `${Math.cos(angle)*dist}px`);
+    piece.style.setProperty("--cy", `${Math.sin(angle)*dist + 200}px`);
+    piece.style.left = cx+"px"; piece.style.top = cy+"px";
+    piece.style.background = colors[i%colors.length];
+    piece.style.animationDelay = (Math.random()*0.2)+"s";
+    wrap.appendChild(piece);
+    setTimeout(()=>piece.remove(),2000);
+  }
+}
+
+let toastTimer;
+function showToast(msg, kind){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.remove("success","error");
+  if(kind) el.classList.add(kind);
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 2400);
+}
+
+function pushNotif(body){
+  state.notifications.unshift({id:Date.now(), ts:Date.now(), body, read:false});
+  if(state.notifications.length>50) state.notifications = state.notifications.slice(0,50);
+  saveState(); renderNotifDot();
+}
+
+function renderNotifDot(){
+  const unread = state.notifications.filter(n=>!n.read).length;
+  document.querySelectorAll(".notif-dot").forEach(d => {
+    if(unread>0){d.textContent = unread > 9 ? "9+" : unread; d.classList.add("show");}
+    else d.classList.remove("show");
+  });
+}
+
+/* ============ RENDERING ============ */
+function renderAll(){
+  renderTotals();
+  renderCryptoList();
+  renderTxLists();
+  renderGoal();
+  renderSparkline();
+  renderCardSpent();
+  renderHideBalance();
+  renderNotifDot();
+  renderFreezeLabel();
+  renderTopMovers();
+  renderMarkets();
+  renderAccountList();
+  renderWatchlist();
+  renderRailSpending();
+  renderTicker();
+  renderInvest();
+  renderRewards();
+  renderBudgets();
+  renderRecurring();
+  renderAnalytics();
+  renderTierBadge();
+  renderAutoTxToggle();
+}
+
+function renderTotals(){
+  const t = totalUsd();
+  const intP = Math.floor(t).toLocaleString("en-US");
+  const decP = (t - Math.floor(t)).toFixed(2).slice(1);
+  const el = document.getElementById("totalBal");
+  el.innerHTML = state.hideBalance ? `••••••<span class="cents"></span>` : `$${intP}<span class="cents">${decP}</span>`;
+  if(prevTotal !== null && Math.abs(t-prevTotal) > 0.01){
+    el.classList.remove("flash-up","flash-down");
+    void el.offsetWidth;
+    el.classList.add(t > prevTotal ? "flash-up" : "flash-down");
+  }
+  prevTotal = t;
+  document.getElementById("usdBalSub").textContent = state.hideBalance ? "••••" : fmtUSD(state.usd);
+  document.getElementById("cryptoBalSub").textContent = state.hideBalance ? "••••" : fmtUSD(totalCryptoUsd());
+  document.getElementById("stockBalSub").textContent = state.hideBalance ? "••••" : fmtUSD(totalStockUsd());
+  const ch = portfolioChangePct();
+  const pill = document.getElementById("totalChangePill");
+  pill.textContent = (ch>=0?"▲ ":"▼ ") + fmtChange(ch).replace("+","").replace("-","");
+  pill.classList.toggle("pos", ch>=0);
+  pill.classList.toggle("neg", ch<0);
+}
+
+function renderTierBadge(){
+  const tier = getTier();
+  const wrap = document.getElementById("tierBadgeWrap");
+  if(wrap){
+    wrap.innerHTML = `<span class="tier-badge ${tier}">${tier}</span>`;
+  }
+  const sb = document.getElementById("sidebarTier");
+  if(sb) sb.textContent = `LMN-2026-0042 · ${tier}`;
+}
+
+function renderCryptoList(){
+  const wrap = document.getElementById("cryptoList");
+  if(!wrap) return;
+  const sorted = [...CRYPTOS].sort((a,b)=>{
+    const va = cryptoUsdValue(a.symbol), vb = cryptoUsdValue(b.symbol);
+    if(va > 0 || vb > 0) return vb - va;
+    return (prices[b.symbol]?.change||0) - (prices[a.symbol]?.change||0);
+  });
+  wrap.innerHTML = "";
+  for(const c of sorted) wrap.appendChild(makeCryptoRow(c));
+}
+
+function makeCryptoRow(c){
+  const p = prices[c.symbol], prev = prevPrices[c.symbol];
+  const price = p?.usd ?? null, change = p?.change ?? null;
+  const amount = state.holdings[c.symbol] || 0;
+  const usdVal = price !== null ? amount * price : 0;
+  const isZero = amount === 0;
+  const row = document.createElement("button");
+  row.className = "crypto-row";
+  if(prev && price && Math.abs(price - prev.usd) / prev.usd > 0.0001){
+    row.classList.add(price > prev.usd ? "price-flash-up" : "price-flash-down");
+  }
+  row.onclick = () => openCryptoDetail(c.symbol);
+  const chCls = (change ?? 0) >= 0 ? "pos" : "neg";
+  const sparkColor = (change ?? 0) >= 0 ? getCSS('--green') : getCSS('--red');
+  row.innerHTML = `
+    <div class="crypto-icon" style="background:${c.color}">${c.symbol === "USDT" ? "₮" : c.symbol[0]}</div>
+    <div class="crypto-info">
+      <div class="crypto-name">${c.name}</div>
+      <div class="crypto-meta"><span>${price !== null ? fmtPrice(price) : "—"}</span><span class="crypto-change ${chCls}">${fmtChange(change)}</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      ${miniSpark(priceHistory[c.symbol], sparkColor)}
+      <div class="crypto-bal">
+        <div class="crypto-bal-amt ${isZero ? "zero" : ""}">${state.hideBalance && !isZero ? "••• " + c.symbol : fmtCrypto(amount, c.symbol)}</div>
+        <div class="crypto-bal-usd ${isZero ? "zero" : ""}">${state.hideBalance && !isZero ? "••••" : fmtUSD(usdVal)}</div>
+      </div>
+    </div>`;
+  return row;
+}
+
+function renderTopMovers(){
+  const wrap = document.getElementById("topMovers");
+  if(!wrap) return;
+  const sorted = CRYPTOS
+    .map(c => ({...c, ch: prices[c.symbol]?.change ?? 0, price: prices[c.symbol]?.usd}))
+    .filter(c => c.price)
+    .sort((a,b) => Math.abs(b.ch) - Math.abs(a.ch))
+    .slice(0,4);
+  wrap.innerHTML = sorted.map(c=>`
+    <button class="mover-card" onclick="openCryptoDetail('${c.symbol}')">
+      <div class="mover-head"><div class="mover-icon" style="background:${c.color}">${c.symbol==="USDT"?"₮":c.symbol[0]}</div><div class="mover-sym">${c.symbol}</div></div>
+      <div class="mover-price">${fmtPrice(c.price)}</div>
+      <div class="mover-change ${c.ch>=0?'pos':'neg'}">${c.ch>=0?'▲':'▼'} ${fmtChange(c.ch).replace('+','').replace('-','')}</div>
+    </button>
+  `).join("");
+}
+
+function renderMarkets(){
+  const wrap = document.getElementById("marketsList");
+  if(!wrap) return;
+  let sorted = [...CRYPTOS];
+  if(marketsSort === "gainers") sorted.sort((a,b) => (prices[b.symbol]?.change||0) - (prices[a.symbol]?.change||0));
+  else if(marketsSort === "losers") sorted.sort((a,b) => (prices[a.symbol]?.change||0) - (prices[b.symbol]?.change||0));
+  wrap.innerHTML = "";
+  for(const c of sorted) wrap.appendChild(makeCryptoRow(c));
+}
+
+function renderAccountList(){
+  const wrap = document.getElementById("accountList");
+  if(!wrap) return;
+  const usdRow = `
+    <button class="crypto-row" onclick="openTopUpModal()">
+      <div class="crypto-icon" style="background:linear-gradient(135deg,#10d97c,#059669)">$</div>
+      <div class="crypto-info"><div class="crypto-name">USD Cash</div><div class="crypto-meta"><span>Main account</span></div></div>
+      <div class="crypto-bal"><div class="crypto-bal-amt">${state.hideBalance ? "••••" : fmtUSD(state.usd)}</div><div class="crypto-bal-usd">Available</div></div>
+    </button>`;
+  const cryptoRows = CRYPTOS.filter(c => (state.holdings[c.symbol]||0) > 0).map(c=>{
+    const amount = state.holdings[c.symbol] || 0, price = prices[c.symbol]?.usd || 0, usdVal = amount * price;
+    return `
+      <button class="crypto-row" onclick="openCryptoDetail('${c.symbol}')">
+        <div class="crypto-icon" style="background:${c.color}">${c.symbol==="USDT"?"₮":c.symbol[0]}</div>
+        <div class="crypto-info"><div class="crypto-name">${c.name}</div><div class="crypto-meta"><span>${fmtPrice(price)}</span></div></div>
+        <div class="crypto-bal"><div class="crypto-bal-amt">${state.hideBalance ? "••• "+c.symbol : fmtCrypto(amount, c.symbol)}</div><div class="crypto-bal-usd">${state.hideBalance ? "••••" : fmtUSD(usdVal)}</div></div>
+      </button>`;
+  }).join("");
+  const stockRows = Object.keys(state.stocks).filter(s=>state.stocks[s] && state.stocks[s].qty>0).map(sym => {
+    const s = STOCKS.find(x=>x.symbol===sym); if(!s) return "";
+    const h = state.stocks[sym], price = stockPrices[sym]?.usd || 0, usdVal = h.qty * price;
+    return `
+      <button class="crypto-row" onclick="openStockDetail('${sym}')">
+        <div class="crypto-icon" style="background:${s.color};border-radius:8px">${sym[0]}</div>
+        <div class="crypto-info"><div class="crypto-name">${s.name}</div><div class="crypto-meta"><span>${sym}</span><span>${fmtPrice(price)}</span></div></div>
+        <div class="crypto-bal"><div class="crypto-bal-amt">${state.hideBalance ? "•••" : h.qty.toFixed(4)+" sh"}</div><div class="crypto-bal-usd">${state.hideBalance ? "••••" : fmtUSD(usdVal)}</div></div>
+      </button>`;
+  }).join("");
+  wrap.innerHTML = usdRow + cryptoRows + stockRows;
+}
+
+function renderWatchlist(){
+  const wrap = document.getElementById("watchlist");
+  if(!wrap) return;
+  const list = state.watchlist.map(sym => {
+    const c = CRYPTOS.find(x => x.symbol === sym);
+    if(!c) return "";
+    const p = prices[sym], ch = p?.change ?? 0;
+    return `
+      <div class="watchlist-row">
+        <div class="watchlist-sym"><div class="crypto-icon" style="background:${c.color}">${sym==="USDT"?"₮":sym[0]}</div><div><div class="watchlist-name">${sym}</div></div></div>
+        <div><div class="watchlist-price">${p ? fmtPrice(p.usd) : "—"}</div><div class="watchlist-ch ${ch>=0?'pos':'neg'}" style="text-align:right">${fmtChange(ch)}</div></div>
+      </div>`;
+  }).join("");
+  wrap.innerHTML = list || '<div style="text-align:center;color:var(--text-3);font-size:12px;padding:12px">No items</div>';
+}
+
+function renderRailSpending(){
+  const wrap = document.getElementById("railSpending");
+  if(!wrap) return;
+  const spent = monthlySpent();
+  const limit = 5000;
+  const pct = Math.min(100, (spent/limit)*100);
+  wrap.innerHTML = `
+    <div style="font-size:22px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-bottom:4px">${state.hideBalance ? "••••" : fmtUSD(spent)}</div>
+    <div style="font-size:12px;color:var(--text-2);margin-bottom:14px">of ${fmtUSD(limit,0)} monthly limit</div>
+    <div style="height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden;margin-bottom:10px"><div style="height:100%;width:${pct}%;background:${pct>80?'var(--red)':pct>60?'var(--orange)':'var(--green)'};border-radius:3px;transition:.6s"></div></div>
+    <div style="font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums">${pct.toFixed(0)}% used</div>`;
+}
+
+function renderTicker(){
+  const t = document.getElementById("tickerTrack");
+  if(!t) return;
+  const cryptoItems = CRYPTOS.filter(c => prices[c.symbol]).slice(0,6).map(c => {
+    const p = prices[c.symbol], ch = p.change || 0;
+    return `<span><strong>${c.symbol}</strong> ${fmtPrice(p.usd)} <span class="${ch>=0?'pos':'neg'}">${fmtChange(ch)}</span></span>`;
+  }).join("");
+  const stockItems = STOCKS.slice(0,5).filter(s => stockPrices[s.symbol]).map(s => {
+    const p = stockPrices[s.symbol], ch = p.change || 0;
+    return `<span><strong>${s.symbol}</strong> ${fmtPrice(p.usd)} <span class="${ch>=0?'pos':'neg'}">${fmtChange(ch)}</span></span>`;
+  }).join("");
+  const items = cryptoItems + stockItems;
+  if(!items){t.innerHTML = "Waiting for live data..."; return;}
+  t.innerHTML = items + items;
+}
+
+function getFilteredTx(){
+  let l = state.transactions;
+  if(txFilter === "in") l = l.filter(t => t.direction === "in");
+  else if(txFilter === "out") l = l.filter(t => t.direction === "out" && t.type !== "exchange" && t.type !== "bill" && t.type !== "invest");
+  else if(txFilter === "exchange") l = l.filter(t => t.type === "exchange");
+  else if(txFilter === "bill") l = l.filter(t => t.type === "bill");
+  else if(txFilter === "invest") l = l.filter(t => t.type === "invest" || t.type === "invest-sell");
+  if(txSearchTerm){
+    const q = txSearchTerm.toLowerCase();
+    l = l.filter(t => (t.title||"").toLowerCase().includes(q) || (t.recipient||"").toLowerCase().includes(q) || (t.symbol||"").toLowerCase().includes(q) || (t.fromSym||"").toLowerCase().includes(q) || (t.toSym||"").toLowerCase().includes(q) || (t.category||"").toLowerCase().includes(q));
+  }
+  return l;
+}
+
+function renderTxLists(){
+  document.getElementById("recentTxList").innerHTML = renderTxRows(state.transactions.slice(0,5));
+  document.getElementById("allTxList").innerHTML = renderTxRows(getFilteredTx());
+  const rail = document.getElementById("railTxList");
+  if(rail) rail.innerHTML = renderTxRows(state.transactions.slice(0,4));
+  const cb = document.getElementById("cashbackList");
+  if(cb){
+    const items = state.transactions.filter(t=>t.cashback && t.cashback>0).slice(0,10);
+    cb.innerHTML = items.length ? items.map(t=>`
+      <div class="tx-row"><div class="tx-icon" style="background:rgba(251,191,36,0.15);color:var(--gold)">⭐</div>
+      <div><div class="tx-title">${t.emoji||''} ${t.title}</div><div class="tx-date">${shortDate(t.ts)}</div></div>
+      <div class="tx-amount pos">+${fmtUSD(t.cashback)}</div></div>`).join("") :
+      `<div class="tx-empty"><div class="empty-illust">⭐</div>Spend on your card to earn cashback</div>`;
+  }
+}
+
+function renderTxRows(items){
+  if(!items.length) return `<div class="tx-empty"><div class="empty-illust">📋</div>No transactions yet</div>`;
+  return items.map(t=>{
+    let cls, icon, title, sub, amt, amtCls;
+    const cat = t.category;
+    const catTag = cat ? `<span class="tx-cat-tag">${cat}</span>` : '';
+    if(t.type==="exchange"){
+      cls="swap";
+      icon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`;
+      title=`Exchange ${t.fromSym} → ${t.toSym}`; sub=shortDate(t.ts);
+      amt=`${fmtCrypto(t.fromAmount,t.fromSym)} → ${fmtCrypto(t.toAmount,t.toSym)}`; amtCls="";
+    } else if(t.type==="invest" || t.type==="invest-sell"){
+      cls="invest";
+      icon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>`;
+      title=t.title; sub=shortDate(t.ts);
+      amt=(t.type==="invest"?"− ":"+ ")+fmtUSD(t.amount); amtCls=t.type==="invest"?"neg":"pos";
+    } else if(t.type==="bill"){
+      cls="bill";
+      icon=t.emoji||`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+      title=t.title; sub=shortDate(t.ts); amt="− "+fmtUSD(t.amount); amtCls="neg";
+    } else if(t.type==="savings"){
+      cls="savings";
+      icon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
+      title=t.title; sub=shortDate(t.ts); amt="− "+fmtUSD(t.amount); amtCls="neg";
+    } else if(t.direction==="in"){
+      cls="in";
+      icon=t.emoji||`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>`;
+      title=t.title||`Top up`; sub=shortDate(t.ts);
+      amt="+ "+(t.symbol==="USD"?fmtUSD(t.amount):fmtCrypto(t.amount,t.symbol)); amtCls="pos";
+    } else {
+      cls=t.emoji?"merchant-icon":"out";
+      icon=t.emoji||`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
+      title=t.title||`Sent to ${t.recipient||"—"}`; sub=shortDate(t.ts);
+      amt="− "+(t.symbol==="USD"?fmtUSD(t.amount):fmtCrypto(t.amount,t.symbol)); amtCls="neg";
+    }
+    const cbLine = t.cashback ? `<div class="tx-amount-sub" style="color:var(--gold)">+${fmtUSD(t.cashback)} cashback</div>` : '';
+    return `<div class="tx-row"><div class="tx-icon ${cls}">${icon}</div><div><div class="tx-title">${title}${catTag}</div><div class="tx-date">${sub}</div></div><div><div class="tx-amount ${amtCls}">${amt}</div>${cbLine}</div></div>`;
+  }).join("");
+}
+
+function renderGoal(){
+  const stat = document.getElementById("goalStat"), sub = document.getElementById("goalStatSub"), setG = document.getElementById("setGoal");
+  if(state.goal){
+    const pct = Math.min(100, (state.goal.current/state.goal.target)*100);
+    stat.textContent = fmtUSD(state.goal.current,0)+" / "+fmtUSD(state.goal.target,0);
+    sub.textContent = state.goal.name+" · "+pct.toFixed(0)+"%";
+    if(setG) setG.textContent = state.goal.name;
+  } else {
+    stat.textContent = "—"; sub.textContent = "Set a goal";
+    if(setG) setG.textContent = "→";
+  }
+}
+function renderCardSpent(){const e = document.getElementById("cardSpent"); if(e) e.textContent = fmtUSD(monthlySpent());}
+function renderFreezeLabel(){
+  const lbl = document.getElementById("freezeCardLabel");
+  const stat = document.getElementById("cardStatus");
+  if(lbl) lbl.textContent = state.cardFrozen?"🔒 Card frozen — tap to unfreeze":"❄️ Freeze card";
+  if(stat){stat.textContent = state.cardFrozen?"● Frozen":"● Active"; stat.style.color = state.cardFrozen?"var(--orange)":"var(--green)";}
+  // Update card visual class based on tier
+  const card = document.getElementById("cardBigEl");
+  const brand = document.getElementById("cardBrand");
+  if(card){
+    const tier = getTier();
+    card.classList.remove("platinum","gold");
+    if(tier === "platinum"){card.classList.add("platinum"); if(brand) brand.textContent = "LUMEN PLATINUM";}
+    else if(tier === "gold"){card.classList.add("gold"); if(brand) brand.textContent = "LUMEN GOLD";}
+    else {if(brand) brand.textContent = "LUMEN STANDARD";}
+  }
+}
+function renderHideBalance(){
+  const slider = document.getElementById("hideBalSlider");
+  const knob = document.getElementById("hideBalKnob");
+  if(!slider) return;
+  if(state.hideBalance){slider.classList.add("on"); knob.classList.add("on");}
+  else {slider.classList.remove("on"); knob.classList.remove("on");}
+}
+function renderAutoTxToggle(){
+  const slider = document.getElementById("autoTxSlider");
+  const knob = document.getElementById("autoTxKnob");
+  if(!slider) return;
+  if(state.autoTransactions){slider.classList.add("on"); knob.classList.add("on");}
+  else {slider.classList.remove("on"); knob.classList.remove("on");}
+}
+
+/* ---------- INVEST view ---------- */
+function renderInvest(){
+  const summary = document.getElementById("portfolioSummary");
+  const myList = document.getElementById("myStocksList");
+  const allList = document.getElementById("stocksList");
+  if(!summary || !allList) return;
+
+  const totalVal = totalStockUsd();
+  const cost = totalStockCostBasis();
+  const pl = totalVal - cost;
+  const plPct = cost > 0 ? (pl/cost)*100 : 0;
+
+  summary.innerHTML = `
+    <div class="portfolio-summary-label">Investing portfolio</div>
+    <div class="portfolio-summary-amt">${state.hideBalance ? "••••" : fmtUSD(totalVal)}</div>
+    <div class="portfolio-summary-pl">${pl>=0?"▲ +":"▼ "}${fmtUSD(Math.abs(pl))} (${fmtChange(plPct)})</div>
+    <div class="portfolio-summary-grid">
+      <div class="portfolio-summary-stat"><div class="portfolio-summary-stat-label">Cost basis</div><div class="portfolio-summary-stat-val">${state.hideBalance ? "••••" : fmtUSD(cost)}</div></div>
+      <div class="portfolio-summary-stat"><div class="portfolio-summary-stat-label">Holdings</div><div class="portfolio-summary-stat-val">${Object.keys(state.stocks).filter(s=>state.stocks[s] && state.stocks[s].qty>0).length} stocks</div></div>
+    </div>`;
+
+  // My holdings
+  const owned = Object.keys(state.stocks).filter(s=>state.stocks[s] && state.stocks[s].qty>0);
+  if(owned.length === 0){
+    myList.innerHTML = `<div class="tx-empty"><div class="empty-illust">📈</div>You don't own any stocks yet<br><button class="btn-primary" style="margin-top:14px;width:auto;padding:10px 20px" onclick="document.querySelector('#stocksList .stock-row')?.click()">Browse stocks</button></div>`;
+  } else {
+    myList.innerHTML = owned.map(sym => {
+      const s = STOCKS.find(x=>x.symbol===sym); if(!s) return "";
+      const h = state.stocks[sym], price = stockPrices[sym]?.usd || 0, ch = stockPrices[sym]?.change || 0;
+      const val = h.qty * price, pl = val - (h.qty * h.costBasis);
+      const sparkColor = ch >= 0 ? getCSS('--green') : getCSS('--red');
+      return `
+        <button class="stock-row" onclick="openStockDetail('${sym}')">
+          <div class="stock-icon" style="background:${s.color}">${sym[0]}</div>
+          <div class="stock-info"><div class="stock-sym">${sym} · ${h.qty.toFixed(4)} sh</div><div class="stock-name">${s.name}</div></div>
+          <div style="display:flex;align-items:center;gap:14px">
+            ${miniSpark(stockHistory[sym], sparkColor)}
+            <div class="stock-bal"><div class="stock-price">${fmtUSD(val)}</div><div class="stock-change ${pl>=0?'pos':'neg'}">${pl>=0?'+':''}${fmtUSD(pl)}</div></div>
+          </div>
+        </button>`;
+    }).join("");
+  }
+
+  // All available stocks (filtered)
+  let available = STOCKS;
+  if(stockCat !== "all") available = STOCKS.filter(s => s.cat === stockCat);
+  allList.innerHTML = available.map(s => {
+    const p = stockPrices[s.symbol], ch = p?.change ?? 0;
+    const sparkColor = ch >= 0 ? getCSS('--green') : getCSS('--red');
+    return `
+      <button class="stock-row" onclick="openStockDetail('${s.symbol}')">
+        <div class="stock-icon" style="background:${s.color}">${s.symbol[0]}</div>
+        <div class="stock-info"><div class="stock-sym">${s.symbol}</div><div class="stock-name">${s.name}</div></div>
+        <div style="display:flex;align-items:center;gap:14px">
+          ${miniSpark(stockHistory[s.symbol], sparkColor)}
+          <div class="stock-bal"><div class="stock-price">${p ? fmtPrice(p.usd) : "—"}</div><div class="stock-change ${ch>=0?'pos':'neg'}">${fmtChange(ch)}</div></div>
+        </div>
+      </button>`;
+  }).join("");
+}
+
+/* ---------- REWARDS view ---------- */
+function renderRewards(){
+  const wrap = document.getElementById("tierCardWrap");
+  const perks = document.getElementById("perksGrid");
+  if(!wrap || !perks) return;
+
+  const tier = getTier();
+  const next = getNextTier();
+  const points = state.rewardsPoints || 0;
+  const cb = state.cashbackEarned || 0;
+
+  let progressLabel = "Top tier reached!";
+  let progressPct = 100;
+  if(next){
+    progressLabel = `${next.needed.toLocaleString()} points to ${next.name}`;
+    progressPct = ((next.total - next.needed)/next.total)*100;
+  }
+
+  wrap.innerHTML = `
+    <div class="tier-card ${tier}">
+      <div class="tier-card-label">Lumen ${tier}</div>
+      <div class="tier-card-name">${tier.charAt(0).toUpperCase()+tier.slice(1)}</div>
+      <div class="tier-card-points">${points.toLocaleString()} points · ${fmtUSD(cb)} earned in cashback</div>
+      <div class="tier-progress"><div class="tier-progress-fill" style="width:${progressPct}%"></div></div>
+      <div class="tier-progress-label">${progressLabel}</div>
+    </div>`;
+
+  const perksData = [
+    {emoji:"💰", name:"1% cashback", desc:"On all card spend", min:"standard"},
+    {emoji:"💎", name:"2% cashback", desc:"Upgraded rate at Gold tier", min:"gold"},
+    {emoji:"🏆", name:"3% cashback", desc:"Top rate at Platinum", min:"platinum"},
+    {emoji:"✈️", name:"Travel insurance", desc:"Free worldwide cover", min:"gold"},
+    {emoji:"🎫", name:"Lounge access", desc:"Airport lounges, unlimited", min:"platinum"},
+    {emoji:"📱", name:"Priority support", desc:"24/7 dedicated agents", min:"gold"},
+    {emoji:"💳", name:"Free ATM withdrawals", desc:"Worldwide, no fees", min:"standard"},
+    {emoji:"🛡️", name:"Purchase protection", desc:"Up to $1,500/year", min:"platinum"}
+  ];
+  const tierRank = {standard:0, gold:1, platinum:2};
+  perks.innerHTML = perksData.map(p => {
+    const active = tierRank[tier] >= tierRank[p.min];
+    return `
+      <div class="perk-card" style="${active?'':'opacity:0.55'}">
+        <div class="perk-emoji">${p.emoji}</div>
+        <div class="perk-info"><div class="perk-name">${p.name}</div><div class="perk-desc">${p.desc}</div></div>
+        <div class="perk-status ${active?'active':'locked'}">${active?'Active':p.min[0].toUpperCase()+p.min.slice(1)+'+'}</div>
+      </div>`;
+  }).join("");
+}
+
+/* ---------- BUDGETS view ---------- */
+function renderBudgets(){
+  const list = document.getElementById("budgetList");
+  const summary = document.getElementById("budgetSummary");
+  if(!list || !summary) return;
+  if(!state.budgets || state.budgets.length === 0){
+    summary.innerHTML = "";
+    list.innerHTML = `<div class="tx-empty"><div class="empty-illust">🎯</div>No budgets yet<br><button class="btn-primary" style="margin-top:14px;width:auto;padding:10px 20px" onclick="openBudgetModal()">+ Add a budget</button></div>`;
+    return;
+  }
+  const cats = monthlySpentByCategory();
+  let totalLimit = 0, totalSpent = 0;
+  for(const b of state.budgets){
+    totalLimit += b.limit;
+    totalSpent += cats[b.category] || 0;
+  }
+  const pct = totalLimit > 0 ? Math.min(100,(totalSpent/totalLimit)*100) : 0;
+  summary.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px">
+      <div style="font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;font-weight:600">Monthly budgets total</div>
+      <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">${fmtUSD(totalSpent)} / ${fmtUSD(totalLimit)}</div>
+      <div style="height:6px;background:var(--surface-3);border-radius:3px;margin-top:10px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${pct>90?'var(--red)':pct>70?'var(--orange)':'var(--green)'};border-radius:3px;transition:.6s"></div></div>
+    </div>`;
+  list.innerHTML = state.budgets.map((b,idx) => {
+    const spent = cats[b.category] || 0;
+    const pct = Math.min(100, (spent/b.limit)*100);
+    const color = pct>90?'var(--red)':pct>70?'var(--orange)':'var(--green)';
+    const c = CATEGORIES[b.category] || {emoji:"💸"};
+    return `
+      <div class="budget-row">
+        <div class="budget-head">
+          <div class="budget-name"><span class="budget-name-emoji">${c.emoji}</span>${b.category}</div>
+          <button class="section-link" onclick="removeBudget(${idx})">Remove</button>
+        </div>
+        <div class="budget-amt"><strong>${fmtUSD(spent)}</strong> of ${fmtUSD(b.limit)} <span style="color:${color};font-weight:600">${pct.toFixed(0)}%</span></div>
+        <div class="budget-bar" style="margin-top:10px"><div class="budget-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>`;
+  }).join("");
+}
+
+window.removeBudget = function(idx){
+  if(confirm("Remove this budget?")){
+    state.budgets.splice(idx,1); saveState(); renderBudgets();
+    showToast("Budget removed","success");
+  }
+};
+
+/* ---------- RECURRING view ---------- */
+function renderRecurring(){
+  const list = document.getElementById("recurringList");
+  const summary = document.getElementById("recurringSummary");
+  if(!list) return;
+  // Detect subscriptions from transaction history
+  const subs = {};
+  for(const t of state.transactions){
+    if(t.direction !== "out" || t.symbol !== "USD") continue;
+    const m = MERCHANTS.find(m => m.name === t.recipient);
+    if(m && m.sub){
+      if(!subs[m.name]) subs[m.name] = {merchant:m, count:0, total:0, last:0, txs:[]};
+      subs[m.name].count++;
+      subs[m.name].total += t.amount;
+      subs[m.name].last = Math.max(subs[m.name].last, t.ts);
+      subs[m.name].txs.push(t);
+    }
+  }
+  const subList = Object.values(subs).sort((a,b)=>b.merchant.min - a.merchant.min);
+  const monthlyTotal = subList.reduce((s,x)=>s+x.merchant.min, 0);
+  summary.innerHTML = `
+    <div style="background:var(--gradient-1);border-radius:14px;padding:16px;color:#fff">
+      <div style="font-size:11px;opacity:0.85;text-transform:uppercase;letter-spacing:0.06em;font-weight:600">Monthly recurring</div>
+      <div style="font-size:26px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">${fmtUSD(monthlyTotal)}/mo</div>
+      <div style="font-size:12px;opacity:0.85;margin-top:4px">${subList.length} active subscriptions</div>
+    </div>`;
+  list.innerHTML = subList.length === 0 ? `<div class="tx-empty"><div class="empty-illust">📋</div>No subscriptions detected yet<br><span style="font-size:11px;color:var(--text-3)">Wait a bit — auto-transactions will populate this</span></div>` :
+    subList.map(s => `
+      <div class="sub-row">
+        <div class="sub-icon">${s.merchant.emoji}</div>
+        <div class="sub-info"><div class="sub-name">${s.merchant.name}</div><div class="sub-meta">${s.merchant.category} · charged ${s.count}× · last ${shortDate(s.last)}</div></div>
+        <div class="sub-amt"><div class="sub-amt-val">${fmtUSD(s.merchant.min)}</div><div class="sub-amt-period">monthly</div></div>
+      </div>`).join("");
+}
+
+/* ---------- ANALYTICS view ---------- */
+function renderAnalytics(){
+  const wrap = document.getElementById("analyticsBody");
+  if(!wrap) return;
+
+  // Category breakdown this month
+  const cats = monthlySpentByCategory();
+  const catEntries = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const totalSpent = catEntries.reduce((s,[,v])=>s+v,0);
+
+  // Income vs spending this month
+  const now = new Date();
+  let income = 0, spending = 0;
+  for(const t of state.transactions){
+    const d = new Date(t.ts);
+    if(d.getMonth()!==now.getMonth() || d.getFullYear()!==now.getFullYear()) continue;
+    if(t.symbol !== "USD") continue;
+    if(t.direction === "in") income += t.amount;
+    else if(t.direction === "out") spending += t.amount;
+  }
+  const net = income - spending;
+
+  // Top merchants
+  const merchTotals = {};
+  for(const t of state.transactions){
+    if(t.direction !== "out" || t.symbol !== "USD" || !t.recipient) continue;
+    const d = new Date(t.ts);
+    if(d.getMonth()!==now.getMonth() || d.getFullYear()!==now.getFullYear()) continue;
+    merchTotals[t.recipient] = (merchTotals[t.recipient]||0) + t.amount;
+  }
+  const topMerch = Object.entries(merchTotals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // Spending by day (last 14 days)
+  const days = {};
+  for(let i=13;i>=0;i--){
+    const d = new Date(now); d.setDate(now.getDate()-i); d.setHours(0,0,0,0);
+    days[d.getTime()] = 0;
+  }
+  for(const t of state.transactions){
+    if(t.direction !== "out" || t.symbol !== "USD") continue;
+    const d = new Date(t.ts); d.setHours(0,0,0,0);
+    if(days[d.getTime()] !== undefined) days[d.getTime()] += t.amount;
+  }
+  const dayEntries = Object.entries(days);
+  const maxDay = Math.max(...dayEntries.map(([,v])=>v), 1);
+
+  // Donut SVG for category breakdown
+  let donutSvg = "";
+  if(catEntries.length > 0){
+    let cum = -90, cx = 60, cy = 60, r = 45, sw = 18;
+    catEntries.forEach(([k,v])=>{
+      const cat = CATEGORIES[k] || {color:"#6b7280"};
+      const a = (v/totalSpent)*360, sA = cum, eA = cum+a; cum = eA;
+      const sR = sA*Math.PI/180, eR = eA*Math.PI/180;
+      const x1 = cx+r*Math.cos(sR), y1 = cy+r*Math.sin(sR);
+      const x2 = cx+r*Math.cos(eR), y2 = cy+r*Math.sin(eR);
+      const lg = a>180?1:0;
+      donutSvg += `<path d="M ${x1} ${y1} A ${r} ${r} 0 ${lg} 1 ${x2} ${y2}" stroke="${cat.color}" stroke-width="${sw}" fill="none"/>`;
+    });
+  }
+
+  wrap.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px">
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:13px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:14px">This month at a glance</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+          <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Income</div><div style="font-size:20px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;letter-spacing:-0.02em;margin-top:4px">${fmtUSD(income)}</div></div>
+          <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Spending</div><div style="font-size:20px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums;letter-spacing:-0.02em;margin-top:4px">${fmtUSD(spending)}</div></div>
+          <div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Net</div><div style="font-size:20px;font-weight:700;color:${net>=0?'var(--green)':'var(--red)'};font-variant-numeric:tabular-nums;letter-spacing:-0.02em;margin-top:4px">${net>=0?'+':''}${fmtUSD(net)}</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:13px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:14px">Daily spending — last 14 days</div>
+        <svg viewBox="0 0 280 100" preserveAspectRatio="none" style="width:100%;height:100px">
+          ${dayEntries.map(([t,v],i) => {
+            const x = (i/(dayEntries.length-1))*270 + 5;
+            const h = (v/maxDay)*80;
+            const y = 95 - h;
+            return `<rect x="${x-8}" y="${y}" width="14" height="${h}" rx="2" fill="${v>0?getCSS('--accent'):'var(--surface-3)'}" opacity="${v>0?1:0.5}"/>`;
+          }).join('')}
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-3);margin-top:8px">
+          <span>${new Date(parseInt(dayEntries[0][0])).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      ${catEntries.length > 0 ? `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:13px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:14px">Category breakdown</div>
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+          <svg viewBox="0 0 120 120" style="width:120px;height:120px;flex-shrink:0">
+            ${donutSvg}
+            <text x="60" y="58" text-anchor="middle" fill="${getCSS('--text-3')}" font-size="10">SPENT</text>
+            <text x="60" y="74" text-anchor="middle" fill="${getCSS('--text')}" font-size="14" font-weight="600">${fmtUSD(totalSpent)}</text>
+          </svg>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:180px">
+            ${catEntries.map(([k,v]) => {
+              const cat = CATEGORIES[k] || {color:"#6b7280", emoji:"💸"};
+              const pct = (v/totalSpent*100).toFixed(0);
+              return `<div class="legend-row"><div class="legend-dot" style="background:${cat.color}"></div><div class="legend-label">${cat.emoji} ${k}</div><div class="legend-val">${fmtUSD(v)} <span style="color:var(--text-3);font-weight:400">${pct}%</span></div></div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>` : ''}
+
+      ${topMerch.length > 0 ? `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+        <div style="font-size:13px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:14px">Top merchants this month</div>
+        ${topMerch.map(([name, val],i) => {
+          const m = MERCHANTS.find(m=>m.name===name);
+          const emoji = m?.emoji || '🛒';
+          const maxVal = topMerch[0][1];
+          const pct = (val/maxVal)*100;
+          return `<div style="margin-bottom:${i===topMerch.length-1?0:12}px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:13px;font-weight:500">${emoji} ${name}</span><span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">${fmtUSD(val)}</span></div><div style="height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:3px"></div></div></div>`;
+        }).join('')}
+      </div>` : ''}
+
+      ${catEntries.length === 0 && topMerch.length === 0 ? `<div class="tx-empty"><div class="empty-illust">📊</div>Make some transactions to see your analytics</div>` : ''}
+    </div>`;
+}
+
+/* ============ MODALS ============ */
+const modalBg = document.getElementById("modalBg");
+const modalContent = document.getElementById("modalContent");
+function openModal(html){modalContent.innerHTML = html; modalBg.classList.add("show");}
+function closeModal(){modalBg.classList.remove("show");}
+modalBg.addEventListener("click", e => {if(e.target === modalBg) closeModal();});
+
+/* ---------- SEND ---------- */
+function openSendModal(){
+  const cryptoOpts = CRYPTOS.filter(c => (state.holdings[c.symbol]||0) > 0).map(c => `<option value="${c.symbol}">${c.symbol} — ${fmtCrypto(state.holdings[c.symbol], c.symbol)}</option>`).join("");
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Send money</h2>
+    <p class="modal-sub">Available: ${fmtUSD(state.usd)}</p>
+    <div class="input-block"><label>Asset</label><select id="sendAsset"><option value="USD">USD — ${fmtUSD(state.usd)}</option>${cryptoOpts}</select></div>
+    <div class="input-block"><label>Recipient</label><input id="sendRecipient" placeholder="Name or @username" /></div>
+    <div class="input-block"><label>Amount</label><input id="sendAmount" inputmode="decimal" placeholder="0.00" /></div>
+    <div class="chips" id="sendQuickChips" style="margin-top:0;margin-bottom:12px">
+      <button class="chip" data-pct="25">25%</button><button class="chip" data-pct="50">50%</button><button class="chip" data-pct="75">75%</button><button class="chip" data-pct="100">Max</button>
+    </div>
+    <div class="input-block"><label>Note (optional)</label><input id="sendNote" placeholder="What's it for?" /></div>
+    <div id="sendErr" class="err-text"></div>
+    <button class="btn-primary" id="sendBtn">Send</button>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Cancel</button>
+  `);
+  const assetSel = document.getElementById("sendAsset");
+  document.getElementById("sendQuickChips").addEventListener("click", e => {
+    const pct = e.target.dataset.pct; if(!pct) return;
+    const sym = assetSel.value;
+    const max = sym === "USD" ? state.usd : (state.holdings[sym]||0);
+    document.getElementById("sendAmount").value = (max * (parseInt(pct)/100)).toFixed(sym === "USD" ? 2 : 6);
+  });
+  document.getElementById("sendBtn").onclick = () => {
+    const sym = assetSel.value;
+    const recipient = document.getElementById("sendRecipient").value.trim();
+    const amount = parseFloat(document.getElementById("sendAmount").value);
+    const note = document.getElementById("sendNote").value.trim();
+    const err = document.getElementById("sendErr");
+    err.classList.remove("show");
+    if(!recipient){err.textContent = "Enter a recipient"; err.classList.add("show"); return;}
+    if(!amount || amount <= 0){err.textContent = "Enter an amount"; err.classList.add("show"); return;}
+    const max = sym === "USD" ? state.usd : (state.holdings[sym]||0);
+    if(amount > max){err.textContent = "Insufficient balance"; err.classList.add("show"); return;}
+    if(sym === "USD") state.usd -= amount;
+    else state.holdings[sym] -= amount;
+    state.transactions.unshift({
+      id:Date.now(), ts:Date.now(), type:"send", direction:"out",
+      title: note || `Sent to ${recipient}`, recipient, symbol:sym, amount, category:"Transfers"
+    });
+    pushNotif(`Sent ${sym==="USD"?fmtUSD(amount):fmtCrypto(amount,sym)} to ${recipient}`);
+    saveState(); closeModal(); renderAll();
+    showToast("Sent successfully","success");
+  };
+}
+
+/* ---------- RECEIVE ---------- */
+function openReceiveModal(){
+  const addr = "lumen:DemaHot-2026-0042";
+  const qrSize = 200;
+  const cells = makeQR(addr);
+  const cellSize = qrSize / cells.length;
+  let svg = `<svg class="qr-svg" viewBox="0 0 ${qrSize} ${qrSize}">`;
+  svg += `<rect width="${qrSize}" height="${qrSize}" fill="#fff"/>`;
+  for(let y=0;y<cells.length;y++) for(let x=0;x<cells[y].length;x++){
+    if(cells[y][x]) svg += `<rect x="${x*cellSize}" y="${y*cellSize}" width="${cellSize}" height="${cellSize}" fill="#000"/>`;
+  }
+  svg += "</svg>";
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Receive money</h2>
+    <p class="modal-sub">Share your Lumen tag with anyone to get paid</p>
+    <div class="qr-box">${svg}<div class="qr-label">${addr}</div></div>
+    <div class="input-block"><label>Account</label><input value="DemaHot · LMN-2026-0042" readonly /></div>
+    <div class="input-block"><label>Routing details</label><input value="LUMEN-CA · 4842 1739 8821" readonly /></div>
+    <button class="btn-primary" onclick="navigator.clipboard?.writeText('${addr}'); showToast('Copied','success')">Copy address</button>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
+  `);
+}
+
+/* QR generator (small but valid alphanum L for short payloads) */
+function makeQR(text){
+  // Lightweight: fall back to a stylized 21x21 random-like deterministic block
+  // (full QR encoder is too large; this is decorative for demo)
+  const N = 25;
+  const grid = Array(N).fill(null).map(()=>Array(N).fill(false));
+  // Hash text deterministically
+  let seed = 0; for(let i=0;i<text.length;i++) seed = ((seed<<5)-seed) + text.charCodeAt(i)|0;
+  const rng = (() => {let s = Math.abs(seed)+1; return () => {s = (s*9301+49297)%233280; return s/233280;};})();
+  // Fill with deterministic noise
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++) grid[y][x] = rng() > 0.5;
+  // Three corner finder patterns
+  const drawFinder = (cy, cx) => {
+    for(let dy=0;dy<7;dy++) for(let dx=0;dx<7;dx++){
+      const y = cy+dy, x = cx+dx;
+      if(y<0||x<0||y>=N||x>=N) continue;
+      const onBorder = dy===0||dy===6||dx===0||dx===6;
+      const inCenter = dy>=2&&dy<=4&&dx>=2&&dx<=4;
+      grid[y][x] = onBorder || inCenter;
+    }
+    // Clear ring around
+    for(let dy=-1;dy<=7;dy++) for(let dx=-1;dx<=7;dx++){
+      const y = cy+dy, x = cx+dx;
+      if(y<0||x<0||y>=N||x>=N) continue;
+      if(dy===-1||dy===7||dx===-1||dx===7) grid[y][x] = false;
+    }
+  };
+  drawFinder(0,0); drawFinder(0,N-7); drawFinder(N-7,0);
+  return grid;
+}
+
+/* ---------- TOP UP ---------- */
+function openTopUpModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Top up</h2>
+    <p class="modal-sub">Add funds to your USD account</p>
+    <div class="input-block"><label>Amount (USD)</label><input id="topupAmount" inputmode="decimal" placeholder="0.00" /></div>
+    <div class="chips">
+      <button class="chip" data-quick="50">$50</button><button class="chip" data-quick="100">$100</button><button class="chip" data-quick="250">$250</button><button class="chip" data-quick="500">$500</button><button class="chip" data-quick="1000">$1,000</button>
+    </div>
+    <div class="input-block"><label>From</label><input value="•••• 7391  Visa Debit" readonly /></div>
+    <div id="topupErr" class="err-text"></div>
+    <button class="btn-primary" id="topupBtn">Top up</button>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Cancel</button>
+  `);
+  modalContent.querySelectorAll("[data-quick]").forEach(b => b.onclick = () => {document.getElementById("topupAmount").value = b.dataset.quick;});
+  document.getElementById("topupBtn").onclick = () => {
+    const amount = parseFloat(document.getElementById("topupAmount").value);
+    const err = document.getElementById("topupErr"); err.classList.remove("show");
+    if(!amount || amount <= 0){err.textContent = "Enter a valid amount"; err.classList.add("show"); return;}
+    state.usd += amount;
+    state.transactions.unshift({id:Date.now(), ts:Date.now(), type:"topup", direction:"in", title:"Top up from card", symbol:"USD", amount, category:"Transfers"});
+    pushNotif(`Topped up ${fmtUSD(amount)}`);
+    saveState(); closeModal(); renderAll();
+    showToast(`Added ${fmtUSD(amount)}`,"success");
+  };
+}
+
+/* ---------- EXCHANGE ---------- */
+function openExchangeModal(){
+  const allOpts = [{symbol:"USD", name:"US Dollar", balance:state.usd}, ...CRYPTOS.map(c => ({symbol:c.symbol, name:c.name, balance:state.holdings[c.symbol]||0}))];
+  const optHtml = allOpts.map(o => `<option value="${o.symbol}">${o.symbol} — ${o.symbol==="USD"?fmtUSD(o.balance):fmtCrypto(o.balance,o.symbol)}</option>`).join("");
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Exchange</h2>
+    <p class="modal-sub">Swap between currencies instantly</p>
+    <div class="input-block"><label>From</label><select id="exFrom">${optHtml}</select><input id="exFromAmt" inputmode="decimal" placeholder="0.00" style="margin-top:8px" /></div>
+    <div class="swap-arrow"><button id="swapBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"/></svg></button></div>
+    <div class="input-block"><label>To</label><select id="exTo">${optHtml}</select><input id="exToAmt" placeholder="0.00" readonly style="margin-top:8px" /></div>
+    <div class="quote-line" id="exQuote">—</div>
+    <div id="exErr" class="err-text"></div>
+    <button class="btn-primary" id="exBtn">Exchange</button>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Cancel</button>
+  `);
+  const exFrom = document.getElementById("exFrom"), exTo = document.getElementById("exTo");
+  exFrom.value = "USD"; exTo.value = "BTC";
+  const exFromAmt = document.getElementById("exFromAmt"), exToAmt = document.getElementById("exToAmt");
+  const exQuote = document.getElementById("exQuote");
+  const priceOf = sym => sym === "USD" ? 1 : (prices[sym]?.usd || 0);
+  const update = () => {
+    const a = parseFloat(exFromAmt.value); if(!a){exToAmt.value=""; exQuote.textContent="—"; return;}
+    const fp = priceOf(exFrom.value), tp = priceOf(exTo.value);
+    if(!fp || !tp){exToAmt.value=""; exQuote.textContent="—"; return;}
+    const usd = a * fp;
+    const out = usd / tp;
+    exToAmt.value = out.toFixed(exTo.value === "USD" ? 2 : 6);
+    exQuote.textContent = `1 ${exFrom.value} ≈ ${(fp/tp).toFixed(6)} ${exTo.value}`;
+  };
+  exFrom.onchange = update; exTo.onchange = update; exFromAmt.oninput = update;
+  document.getElementById("swapBtn").onclick = () => {const a = exFrom.value; exFrom.value = exTo.value; exTo.value = a; update();};
+  document.getElementById("exBtn").onclick = () => {
+    const fromSym = exFrom.value, toSym = exTo.value, fromAmt = parseFloat(exFromAmt.value);
+    const err = document.getElementById("exErr"); err.classList.remove("show");
+    if(fromSym === toSym){err.textContent = "Pick two different assets"; err.classList.add("show"); return;}
+    if(!fromAmt || fromAmt <= 0){err.textContent = "Enter an amount"; err.classList.add("show"); return;}
+    const max = fromSym === "USD" ? state.usd : (state.holdings[fromSym]||0);
+    if(fromAmt > max){err.textContent = "Insufficient balance"; err.classList.add("show"); return;}
+    const fp = priceOf(fromSym), tp = priceOf(toSym);
+    const toAmt = (fromAmt * fp) / tp;
+    if(fromSym === "USD") state.usd -= fromAmt; else state.holdings[fromSym] -= fromAmt;
+    if(toSym === "USD") state.usd += toAmt; else state.holdings[toSym] = (state.holdings[toSym]||0) + toAmt;
+    state.transactions.unshift({
+      id:Date.now(), ts:Date.now(), type:"exchange", direction:"swap",
+      fromSym, toSym, fromAmount:fromAmt, toAmount:toAmt, category:"Transfers"
+    });
+    pushNotif(`Swapped ${fmtCrypto(fromAmt, fromSym).replace(fromSym,"").trim()} ${fromSym} → ${toSym}`);
+    saveState(); closeModal(); renderAll();
+    showToast("Exchange complete","success");
+  };
+}
+
+/* ---------- BILLS ---------- */
+const BILLS = [
+  {name:"Electricity", amount:78.50, emoji:"⚡"},
+  {name:"Internet", amount:64.99, emoji:"🌐"},
+  {name:"Mobile", amount:45.00, emoji:"📱"},
+  {name:"Rent", amount:1450, emoji:"🏠"},
+  {name:"Water", amount:32.40, emoji:"💧"},
+  {name:"Streaming bundle", amount:23.99, emoji:"📺"}
+];
+function openBillsModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Pay a bill</h2>
+    <p class="modal-sub">Available: ${fmtUSD(state.usd)}</p>
+    <div class="settings-list" style="margin-bottom:0">
+      ${BILLS.map((b,i) => `<button class="settings-item" data-bill="${i}"><span class="settings-item-label"><span style="font-size:18px;margin-right:6px">${b.emoji}</span>${b.name}</span><span class="settings-item-val">${fmtUSD(b.amount)} →</span></button>`).join("")}
+    </div>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:14px">Cancel</button>
+  `);
+  modalContent.querySelectorAll("[data-bill]").forEach(btn => btn.onclick = () => {
+    const b = BILLS[parseInt(btn.dataset.bill)];
+    if(b.amount > state.usd){showToast("Insufficient balance","error"); return;}
+    state.usd -= b.amount;
+    state.transactions.unshift({id:Date.now(), ts:Date.now(), type:"bill", direction:"out", title:`${b.name} bill`, recipient:b.name, symbol:"USD", amount:b.amount, emoji:b.emoji, category:"Bills"});
+    pushNotif(`Paid ${b.name} ${fmtUSD(b.amount)}`);
+    saveState(); closeModal(); renderAll();
+    showToast(`Paid ${b.name}`,"success");
+  });
+}
+
+/* ---------- GOAL ---------- */
+function openGoalModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Savings goal</h2>
+    <p class="modal-sub">${state.goal ? `Current goal: ${state.goal.name}` : "Set your savings target"}</p>
+    <div class="input-block"><label>Goal name</label><input id="goalName" placeholder="e.g., Vacation in Tokyo" value="${state.goal?.name||''}" /></div>
+    <div class="input-block"><label>Target amount</label><input id="goalTarget" inputmode="decimal" placeholder="0.00" value="${state.goal?.target||''}" /></div>
+    <div class="input-block"><label>Add to goal now (optional)</label><input id="goalAdd" inputmode="decimal" placeholder="0.00" /></div>
+    <div id="goalErr" class="err-text"></div>
+    <button class="btn-primary" id="goalSaveBtn">Save goal</button>
+    ${state.goal?'<button class="btn-secondary btn-danger" id="goalDeleteBtn" style="margin-top:8px">Delete goal</button>':''}
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Cancel</button>
+  `);
+  document.getElementById("goalSaveBtn").onclick = () => {
+    const name = document.getElementById("goalName").value.trim();
+    const target = parseFloat(document.getElementById("goalTarget").value);
+    const add = parseFloat(document.getElementById("goalAdd").value || 0);
+    const err = document.getElementById("goalErr"); err.classList.remove("show");
+    if(!name){err.textContent = "Name your goal"; err.classList.add("show"); return;}
+    if(!target || target <= 0){err.textContent = "Enter a target amount"; err.classList.add("show"); return;}
+    if(add > state.usd){err.textContent = "Insufficient USD"; err.classList.add("show"); return;}
+    if(!state.goal) state.goal = {name, target, current:0, created:Date.now()};
+    state.goal.name = name; state.goal.target = target;
+    if(add > 0){
+      state.usd -= add; state.goal.current += add;
+      state.transactions.unshift({id:Date.now(), ts:Date.now(), type:"savings", direction:"out", title:`To ${name}`, symbol:"USD", amount:add, category:"Savings"});
+      pushNotif(`Saved ${fmtUSD(add)} toward ${name}`);
+    }
+    saveState(); closeModal(); renderAll();
+    showToast("Goal saved","success");
+  };
+  if(state.goal){document.getElementById("goalDeleteBtn").onclick = () => {
+    if(confirm("Delete savings goal? Your saved balance returns to USD.")){
+      state.usd += state.goal.current; state.goal = null; saveState(); closeModal(); renderAll();
+      showToast("Goal deleted","success");
+    }
+  };}
+}
+
+/* ---------- BUDGET ---------- */
+function openBudgetModal(){
+  const used = state.budgets.map(b=>b.category);
+  const opts = Object.keys(CATEGORIES).filter(c => !used.includes(c)).map(c => `<option value="${c}">${CATEGORIES[c].emoji} ${c}</option>`).join("");
+  if(!opts){
+    openModal(`<div class="modal-handle"></div><h2 class="modal-title">Add budget</h2><p class="modal-sub">You've already set budgets for all categories</p><button class="btn-secondary" onclick="closeModal()">Close</button>`);
+    return;
+  }
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Add budget</h2>
+    <p class="modal-sub">Set a monthly spending limit for a category</p>
+    <div class="input-block"><label>Category</label><select id="budgetCat">${opts}</select></div>
+    <div class="input-block"><label>Monthly limit (USD)</label><input id="budgetLimit" inputmode="decimal" placeholder="0.00" /></div>
+    <div class="chips" style="margin-top:0;margin-bottom:12px">
+      <button class="chip" data-quick="100">$100</button><button class="chip" data-quick="200">$200</button><button class="chip" data-quick="500">$500</button><button class="chip" data-quick="1000">$1,000</button>
+    </div>
+    <div id="budgetErr" class="err-text"></div>
+    <button class="btn-primary" id="budgetSaveBtn">Add budget</button>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Cancel</button>
+  `);
+  modalContent.querySelectorAll("[data-quick]").forEach(b => b.onclick = () => {document.getElementById("budgetLimit").value = b.dataset.quick;});
+  document.getElementById("budgetSaveBtn").onclick = () => {
+    const cat = document.getElementById("budgetCat").value;
+    const limit = parseFloat(document.getElementById("budgetLimit").value);
+    const err = document.getElementById("budgetErr"); err.classList.remove("show");
+    if(!limit || limit<=0){err.textContent = "Enter a valid limit"; err.classList.add("show"); return;}
+    state.budgets.push({category:cat, limit});
+    saveState(); closeModal(); renderBudgets();
+    showToast("Budget added","success");
+  };
+}
+
+/* ---------- CRYPTO DETAIL ---------- */
+function openCryptoDetail(sym){
+  const c = CRYPTOS.find(x=>x.symbol===sym); if(!c) return;
+  const p = prices[sym]; const ch = p?.change ?? 0;
+  const owned = state.holdings[sym] || 0;
+  const usdVal = owned * (p?.usd||0);
+  const inWatchlist = state.watchlist.includes(sym);
+  const hist = priceHistory[sym] || [];
+  let chartHtml = '<div style="height:140px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px">Building chart…</div>';
+  if(hist.length >= 2){
+    const min = Math.min(...hist), max = Math.max(...hist), range = max-min || 1;
+    const W = 400, H = 140, pad = 8;
+    const points = hist.map((v,i)=>[pad + (i/(hist.length-1))*(W-pad*2), H-pad-((v-min)/range)*(H-pad*2)]);
+    const color = ch>=0 ? getCSS('--green') : getCSS('--red');
+    let path = `M ${points[0][0]} ${points[0][1]}`;
+    for(let i=1;i<points.length;i++){const [x,y]=points[i],[px,py]=points[i-1],cx=(px+x)/2; path += ` Q ${cx} ${py}, ${cx} ${(py+y)/2} T ${x} ${y}`;}
+    const lastX = points[points.length-1][0], firstX = points[0][0];
+    chartHtml = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:140px">
+      <defs><linearGradient id="cd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+      <path d="${path} L ${lastX} ${H} L ${firstX} ${H} Z" fill="url(#cd)"/>
+      <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  openModal(`
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <div class="crypto-icon" style="background:${c.color};width:42px;height:42px;font-size:14px">${sym==="USDT"?"₮":sym[0]}</div>
+      <div style="flex:1"><div style="font-size:18px;font-weight:700">${c.name}</div><div style="font-size:13px;color:var(--text-2)">${sym}</div></div>
+      <button class="icon-btn" id="watchToggle" title="${inWatchlist?'Remove from watchlist':'Add to watchlist'}"><svg viewBox="0 0 24 24" fill="${inWatchlist?'gold':'none'}" stroke="${inWatchlist?'gold':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+    </div>
+    <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${p?fmtPrice(p.usd):"—"}</div>
+    <div style="font-size:14px;font-weight:600;color:${ch>=0?'var(--green)':'var(--red)'};margin-bottom:14px">${ch>=0?'▲':'▼'} ${fmtChange(ch)}</div>
+    ${chartHtml}
+    <div style="margin-top:16px;background:var(--surface-2);border-radius:12px;padding:14px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2)"><span>Your holdings</span></div>
+      <div style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px">${fmtCrypto(owned, sym)}</div>
+      <div style="font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums">${fmtUSD(usdVal)}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+      <button class="btn-primary" onclick="closeModal();openExchangeModal()">Trade</button>
+      <button class="btn-secondary" onclick="closeModal();openSendModal()">Send</button>
+    </div>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
+  `);
+  document.getElementById("watchToggle").onclick = () => {
+    if(state.watchlist.includes(sym)) state.watchlist = state.watchlist.filter(x=>x!==sym);
+    else state.watchlist.push(sym);
+    saveState(); closeModal(); openCryptoDetail(sym); renderWatchlist();
+  };
+}
+
+/* ---------- STOCK DETAIL ---------- */
+function openStockDetail(sym){
+  const s = STOCKS.find(x=>x.symbol===sym); if(!s) return;
+  const p = stockPrices[sym]; const ch = p?.change ?? 0;
+  const h = state.stocks[sym]; const owned = h?.qty || 0;
+  const val = owned * (p?.usd||0); const cost = owned * (h?.costBasis||0);
+  const pl = val - cost;
+  const hist = stockHistory[sym] || [];
+  let chartHtml = '<div style="height:160px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px">Building chart…</div>';
+  if(hist.length >= 2){
+    const min = Math.min(...hist), max = Math.max(...hist), range = max-min || 1;
+    const W = 400, H = 160, pad = 8;
+    const points = hist.map((v,i)=>[pad + (i/(hist.length-1))*(W-pad*2), H-pad-((v-min)/range)*(H-pad*2)]);
+    const color = ch>=0 ? getCSS('--green') : getCSS('--red');
+    let path = `M ${points[0][0]} ${points[0][1]}`;
+    for(let i=1;i<points.length;i++){const [x,y]=points[i],[px,py]=points[i-1],cx=(px+x)/2; path += ` Q ${cx} ${py}, ${cx} ${(py+y)/2} T ${x} ${y}`;}
+    const lastX = points[points.length-1][0], firstX = points[0][0];
+    chartHtml = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:160px">
+      <defs><linearGradient id="sd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+      <path d="${path} L ${lastX} ${H} L ${firstX} ${H} Z" fill="url(#sd)"/>
+      <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  openModal(`
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <div class="stock-icon" style="background:${s.color};width:42px;height:42px;font-size:14px">${sym[0]}</div>
+      <div style="flex:1"><div style="font-size:18px;font-weight:700">${s.name}</div><div style="font-size:13px;color:var(--text-2)">${sym} · ${s.cat}</div></div>
+    </div>
+    <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${p?fmtPrice(p.usd):"—"}</div>
+    <div style="font-size:14px;font-weight:600;color:${ch>=0?'var(--green)':'var(--red)'};margin-bottom:14px">${ch>=0?'▲':'▼'} ${fmtChange(ch)}</div>
+    ${chartHtml}
+    ${owned > 0 ? `
+      <div style="margin-top:16px;background:var(--surface-2);border-radius:12px;padding:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2)"><span>Your position</span><span>P&L</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:4px">
+          <div><div style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums">${owned.toFixed(4)} sh</div><div style="font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums">${fmtUSD(val)}</div></div>
+          <div style="text-align:right;color:${pl>=0?'var(--green)':'var(--red)'};font-weight:600;font-variant-numeric:tabular-nums">${pl>=0?'+':''}${fmtUSD(pl)}</div>
+        </div>
+      </div>` : ''}
+    <div class="input-block" style="margin-top:14px"><label>Amount (USD)</label><input id="stockAmount" inputmode="decimal" placeholder="0.00" /></div>
+    <div class="chips" style="margin-top:0;margin-bottom:12px">
+      <button class="chip" data-quick="100">$100</button><button class="chip" data-quick="500">$500</button><button class="chip" data-quick="1000">$1,000</button>
+    </div>
+    <div id="stockErr" class="err-text"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn-primary" id="stockBuyBtn">Buy</button>
+      <button class="btn-secondary ${owned>0?'':''}" id="stockSellBtn" ${owned>0?'':'disabled'}>Sell</button>
+    </div>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:8px">Close</button>
+  `);
+  modalContent.querySelectorAll("[data-quick]").forEach(b => b.onclick = () => {document.getElementById("stockAmount").value = b.dataset.quick;});
+  document.getElementById("stockBuyBtn").onclick = () => {
+    const usd = parseFloat(document.getElementById("stockAmount").value);
+    const err = document.getElementById("stockErr"); err.classList.remove("show");
+    if(!usd || usd <= 0){err.textContent = "Enter an amount"; err.classList.add("show"); return;}
+    if(usd > state.usd){err.textContent = "Insufficient USD"; err.classList.add("show"); return;}
+    const price = p?.usd || 0; if(!price){err.textContent = "Price unavailable"; err.classList.add("show"); return;}
+    const qty = usd / price;
+    state.usd -= usd;
+    if(!state.stocks[sym]) state.stocks[sym] = {qty:0, costBasis:0};
+    const old = state.stocks[sym];
+    const newQty = old.qty + qty;
+    const newCost = ((old.qty * old.costBasis) + usd) / newQty; // weighted avg cost basis
+    state.stocks[sym] = {qty:newQty, costBasis:newCost};
+    state.transactions.unshift({id:Date.now(), ts:Date.now(), type:"invest", direction:"out", title:`Bought ${qty.toFixed(4)} sh ${sym}`, symbol:"USD", amount:usd, category:"Investing"});
+    pushNotif(`Bought ${qty.toFixed(4)} ${sym}`);
+    saveState(); closeModal(); renderAll();
+    showToast(`Bought ${sym}`,"success");
+  };
+  document.getElementById("stockSellBtn").onclick = () => {
+    const usd = parseFloat(document.getElementById("stockAmount").value);
+    const err = document.getElementById("stockErr"); err.classList.remove("show");
+    if(!usd || usd <= 0){err.textContent = "Enter an amount"; err.classList.add("show"); return;}
+    const price = p?.usd || 0; if(!price){err.textContent = "Price unavailable"; err.classList.add("show"); return;}
+    const ownedUsd = (h?.qty||0) * price;
+    if(usd > ownedUsd){err.textContent = "Not enough shares"; err.classList.add("show"); return;}
+    const qty = usd / price;
+    state.usd += usd;
+    state.stocks[sym].qty -= qty;
+    if(state.stocks[sym].qty < 0.0001) delete state.stocks[sym];
+    state.transactions.unshift({id:Date.now(), ts:Date.now(), type:"invest-sell", direction:"in", title:`Sold ${qty.toFixed(4)} sh ${sym}`, symbol:"USD", amount:usd, category:"Investing"});
+    pushNotif(`Sold ${qty.toFixed(4)} ${sym}`);
+    saveState(); closeModal(); renderAll();
+    showToast(`Sold ${sym}`,"success");
+  };
+}
+
+/* ---------- NOTIFICATIONS PANEL ---------- */
+function openNotifModal(){
+  state.notifications.forEach(n => n.read = true); saveState(); renderNotifDot();
+  const items = state.notifications.length ? state.notifications.slice(0,30).map(n => `<div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:13px;color:var(--text)">${n.body}</div><div style="font-size:11px;color:var(--text-3);margin-top:4px">${shortDate(n.ts)}</div></div>`).join("") : '<div class="tx-empty"><div class="empty-illust">🔔</div>No notifications yet</div>';
+  openModal(`
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Notifications</h2>
+    <p class="modal-sub">${state.notifications.length} total</p>
+    <div style="background:var(--surface-2);border-radius:12px;overflow:hidden;max-height:50vh;overflow-y:auto">${items}</div>
+    <button class="btn-secondary" onclick="closeModal()" style="margin-top:14px">Close</button>
+  `);
+}
+
+
+/* ============ ONBOARDING ============ */
+let onboardStep = 0;
+const ONBOARD_STEPS = [
+  {
+    title: "Welcome to Lumen",
+    body: "Your demo banking + investing app. Live crypto prices, simulated stocks, and transactions that arrive automatically.",
+    cta: "Get started"
+  },
+  {
+    title: "Set a savings goal",
+    body: "Pick something to save for. You can change it anytime in Settings.",
+    cta: "Skip for now",
+    custom: true
+  },
+  {
+    title: "Set your first budget",
+    body: "Cap your monthly spending in a category. We'll track it for you.",
+    cta: "Skip for now",
+    custom: "budget"
+  },
+  {
+    title: "All set",
+    body: "Watch your activity feed — Lumen will simulate transactions throughout the day. You can disable this in Settings.",
+    cta: "Start using Lumen"
+  }
+];
+
+function showOnboarding(){
+  onboardStep = 0;
+  document.getElementById("onboardOverlay").classList.add("show");
+  renderOnboardStep();
+}
+function renderOnboardStep(){
+  const card = document.getElementById("onboardCard");
+  const step = ONBOARD_STEPS[onboardStep];
+  const dots = ONBOARD_STEPS.map((_,i) => `<div class="onboard-dot ${i===onboardStep?'active':''}"></div>`).join("");
+  let extra = "";
+  if(step.custom === true){
+    extra = `
+      <div class="input-block"><label>Goal name</label><input id="obGoalName" placeholder="e.g., Tokyo trip" /></div>
+      <div class="input-block"><label>Target ($)</label><input id="obGoalTarget" inputmode="decimal" placeholder="0.00" /></div>
+    `;
+  } else if(step.custom === "budget"){
+    const opts = Object.keys(CATEGORIES).map(c => `<option value="${c}">${CATEGORIES[c].emoji} ${c}</option>`).join("");
+    extra = `
+      <div class="input-block"><label>Category</label><select id="obBudgetCat">${opts}</select></div>
+      <div class="input-block"><label>Monthly limit ($)</label><input id="obBudgetLimit" inputmode="decimal" placeholder="0.00" /></div>
+    `;
+  }
+  card.innerHTML = `
+    <div class="onboard-step-dots">${dots}</div>
+    <h2 style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px;text-align:center">${step.title}</h2>
+    <p style="font-size:14px;color:var(--text-2);text-align:center;margin-bottom:24px">${step.body}</p>
+    ${extra}
+    <button class="btn-primary" id="obNextBtn">${onboardStep < ONBOARD_STEPS.length-1 ? "Continue" : step.cta}</button>
+    ${onboardStep > 0 ? `<button class="btn-secondary" id="obSkipBtn" style="margin-top:8px">${step.cta}</button>` : ""}
+  `;
+  document.getElementById("obNextBtn").onclick = () => {
+    // Save goal/budget data if filled
+    if(step.custom === true){
+      const name = document.getElementById("obGoalName")?.value.trim();
+      const target = parseFloat(document.getElementById("obGoalTarget")?.value);
+      if(name && target > 0) state.goal = {name, target, current:0, created:Date.now()};
+    }
+    if(step.custom === "budget"){
+      const cat = document.getElementById("obBudgetCat")?.value;
+      const limit = parseFloat(document.getElementById("obBudgetLimit")?.value);
+      if(cat && limit > 0) state.budgets.push({category:cat, limit});
+    }
+    advanceOnboard();
+  };
+  if(onboardStep > 0){
+    document.getElementById("obSkipBtn").onclick = () => advanceOnboard();
+  }
+}
+function advanceOnboard(){
+  onboardStep++;
+  if(onboardStep >= ONBOARD_STEPS.length){
+    state.onboarded = true; saveState();
+    document.getElementById("onboardOverlay").classList.remove("show");
+    renderAll();
+  } else {
+    renderOnboardStep();
+  }
+}
+
+/* ============ SEED SAMPLE DATA ============ */
+function seedSampleData(){
+  const merchants = [
+    {n:"Starbucks", a:6.45, e:"☕", c:"Food & Drink", cb:0.06},
+    {n:"Amazon", a:42.18, e:"📦", c:"Shopping", cb:0.42},
+    {n:"Uber", a:18.50, e:"🚗", c:"Transport", cb:0.19},
+    {n:"Spotify", a:11.99, e:"🎵", c:"Subscription", cb:0.12},
+    {n:"Whole Foods", a:78.32, e:"🥬", c:"Groceries", cb:0.78},
+    {n:"DoorDash", a:32.45, e:"🛵", c:"Food & Drink", cb:0.32},
+    {n:"Bell Canada", a:78, e:"📱", c:"Bills", cb:0.78},
+    {n:"Tim Hortons", a:4.85, e:"🍩", c:"Food & Drink", cb:0.05},
+    {n:"Netflix", a:15.49, e:"🎬", c:"Subscription", cb:0.15},
+  ];
+  const now = Date.now();
+  let totalCb = 0, totalSpent = 0;
+  for(let i=0;i<merchants.length;i++){
+    const m = merchants[i];
+    const ts = now - (i+1)*4*60*60*1000 - Math.random()*60*60*1000;
+    state.transactions.unshift({
+      id:ts, ts, type:"send", direction:"out", title:m.n, recipient:m.n,
+      symbol:"USD", amount:m.a, emoji:m.e, category:m.c, cashback:m.cb, auto:true
+    });
+    state.usd -= m.a; totalCb += m.cb; totalSpent += m.a;
+  }
+  // payroll
+  const payTs = now - 3*24*60*60*1000;
+  state.transactions.push({id:payTs, ts:payTs, type:"topup", direction:"in", title:"Acme Corp Payroll", symbol:"USD", amount:2450, emoji:"💼", category:"Transfers"});
+  state.usd += 2450;
+  // Sort tx by ts desc
+  state.transactions.sort((a,b)=>b.ts-a.ts);
+  state.cashbackEarned += totalCb;
+  state.rewardsPoints += Math.floor(totalSpent);
+  saveState(); renderAll();
+  showToast("Sample data seeded","success");
+}
+
+/* ============ WIRING ============ */
+const VIEW_TITLES = {
+  home: ["Dashboard","Welcome back, Dema"],
+  wallet: ["Wallet","All your accounts"],
+  invest: ["Invest","Buy stocks and track performance"],
+  markets: ["Markets","Live crypto prices and movements"],
+  activity: ["Activity","All your transactions"],
+  analytics: ["Analytics","Insights into your spending"],
+  budgets: ["Budgets","Stay on top of your spending"],
+  recurring: ["Subscriptions","Recurring charges"],
+  rewards: ["Rewards","Tier benefits and cashback"],
+  cards: ["Cards","Manage your Lumen card"],
+  settings: ["Settings","Preferences and demo controls"]
+};
+
+function switchView(view){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  const target = document.getElementById(`view-${view}`);
+  if(target) target.classList.add("active");
+  document.querySelectorAll(".sidebar-item[data-view]").forEach(i => i.classList.toggle("active", i.dataset.view === view));
+  document.querySelectorAll(".nav-item[data-view]").forEach(i => i.classList.toggle("active", i.dataset.view === view));
+  const t = VIEW_TITLES[view];
+  if(t){
+    document.getElementById("viewTitle").textContent = t[0];
+    document.getElementById("viewSubtitle").textContent = t[1];
+  }
+  window.scrollTo(0,0);
+}
+
+function handleAction(action){
+  if(action === "send") openSendModal();
+  else if(action === "receive") openReceiveModal();
+  else if(action === "exchange") openExchangeModal();
+  else if(action === "topup") openTopUpModal();
+  else if(action === "bills") openBillsModal();
+  else if(action === "goal") openGoalModal();
+  else if(action === "invest") switchView("invest");
+}
+
+/* Login */
+const loginForm = document.getElementById("loginForm");
+loginForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+  const err = document.getElementById("loginErr");
+  if(u === VALID_USER && p === VALID_PASS){
+    err.classList.remove("show");
+    sessionStorage.setItem(SESSION_KEY, "1");
+    if(!state.firstLogin) {state.firstLogin = Date.now(); saveState();}
+    showApp();
+  } else {
+    err.classList.add("show");
+    document.getElementById("password").value = "";
+  }
+});
+
+function showApp(){
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("app").classList.add("active");
+  bootstrap();
+}
+function showLogin(){
+  document.getElementById("app").classList.remove("active");
+  document.getElementById("loginScreen").style.display = "flex";
+}
+
+/* Sign out */
+function signOut(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  showLogin();
+}
+document.getElementById("logoutBtn").onclick = signOut;
+document.getElementById("logoutBtnDesktop").onclick = signOut;
+document.getElementById("signOutBtn").onclick = signOut;
+
+/* Reset / seed */
+document.getElementById("resetBtn").onclick = () => {
+  if(confirm("Reset all demo data?")){resetState(); renderAll(); showToast("Reset complete","success");}
+};
+document.getElementById("seedDataBtn").onclick = seedSampleData;
+
+/* View buttons */
+document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => switchView(b.dataset.view)));
+document.querySelectorAll("[data-view-jump]").forEach(b => b.addEventListener("click", () => switchView(b.dataset.viewJump)));
+
+/* Action buttons */
+document.querySelectorAll("[data-action]").forEach(b => b.addEventListener("click", () => handleAction(b.dataset.action)));
+
+/* Add budget */
+document.getElementById("addBudgetBtn").onclick = openBudgetModal;
+
+/* Card flip */
+document.getElementById("flipBtn").onclick = () => document.getElementById("cardBigEl").classList.toggle("flipped");
+document.getElementById("flipBackBtn").onclick = () => document.getElementById("cardBigEl").classList.toggle("flipped");
+
+/* Freeze card */
+document.getElementById("freezeCardBtn").onclick = () => {
+  state.cardFrozen = !state.cardFrozen; saveState(); renderFreezeLabel();
+  showToast(state.cardFrozen?"Card frozen":"Card unfrozen","success");
+};
+
+/* Hide balance toggle */
+document.getElementById("hideBalToggle").onclick = () => {
+  state.hideBalance = !state.hideBalance; saveState(); renderAll();
+};
+
+/* Auto-tx toggle */
+document.getElementById("autoTxToggle").onclick = () => {
+  state.autoTransactions = !state.autoTransactions; saveState(); renderAutoTxToggle();
+  showToast(state.autoTransactions?"Live transactions enabled":"Live transactions paused","success");
+};
+
+/* Notifications */
+document.getElementById("notifBtn").onclick = openNotifModal;
+const notifBtnD = document.getElementById("notifBtnDesktop");
+if(notifBtnD) notifBtnD.onclick = openNotifModal;
+
+/* TX search */
+const txSearchInput = document.getElementById("txSearch");
+if(txSearchInput) txSearchInput.addEventListener("input", e => {txSearchTerm = e.target.value; renderTxLists();});
+
+/* TX filter chips */
+document.querySelectorAll("[data-filter]").forEach(b => b.addEventListener("click", () => {
+  txFilter = b.dataset.filter;
+  document.querySelectorAll("[data-filter]").forEach(x => x.classList.toggle("active", x === b));
+  renderTxLists();
+}));
+
+/* Markets sort */
+document.querySelectorAll("[data-market-sort]").forEach(b => b.addEventListener("click", () => {
+  marketsSort = b.dataset.marketSort;
+  document.querySelectorAll("[data-market-sort]").forEach(x => x.classList.toggle("active", x === b));
+  renderMarkets();
+}));
+
+/* Stock category */
+document.querySelectorAll("[data-stock-cat]").forEach(b => b.addEventListener("click", () => {
+  stockCat = b.dataset.stockCat;
+  document.querySelectorAll("[data-stock-cat]").forEach(x => x.classList.toggle("active", x === b));
+  renderInvest();
+}));
+
+/* Chart period */
+document.getElementById("chartTabs").addEventListener("click", e => {
+  const btn = e.target.closest(".chart-tab");
+  if(!btn) return;
+  chartPeriod = btn.dataset.period;
+  document.querySelectorAll(".chart-tab").forEach(t => t.classList.toggle("active", t === btn));
+  renderSparkline();
+});
+
+/* Global search */
+const globalSearch = document.getElementById("globalSearch");
+if(globalSearch){
+  globalSearch.addEventListener("input", e => {
+    txSearchTerm = e.target.value;
+    if(txSearchTerm) switchView("activity");
+    renderTxLists();
+  });
+}
+
+/* ============ BOOTSTRAP & LOOPS ============ */
+async function bootstrap(){
+  // Skeleton state for crypto list
+  document.getElementById("cryptoList").innerHTML = Array(5).fill(0).map(()=>`<div style="display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border)"><div class="skel" style="width:36px;height:36px;border-radius:50%"></div><div><div class="skel" style="width:80px"></div><div class="skel" style="width:120px;margin-top:6px;height:10px"></div></div><div class="skel" style="width:60px"></div></div>`).join("");
+
+  await fetchPrices();
+  tickStocks();
+  recordHistoryPoint();
+  renderAll();
+
+  // Show onboarding for first-time users
+  if(!state.onboarded && state.transactions.length === 0){
+    setTimeout(showOnboarding, 600);
+  }
+
+  // Periodic loops
+  setInterval(async () => {
+    await fetchPrices();
+    recordHistoryPoint();
+    renderAll();
+  }, 30000);
+  setInterval(() => {
+    tickStocks();
+    if(document.getElementById("view-invest").classList.contains("active")) renderInvest();
+    renderTicker();
+  }, 5000);
+  // Auto-tx loop with random interval 25-90s
+  function scheduleAutoTx(){
+    const delay = 25000 + Math.random()*65000;
+    setTimeout(() => {generateAutoTransaction(); scheduleAutoTx();}, delay);
+  }
+  scheduleAutoTx();
+  // Paycheck check every 60s
+  setInterval(maybePaycheck, 60000);
+  // First paycheck timer (~30s after first login)
+  setTimeout(maybePaycheck, 30000);
+}
+
+/* Auto-login if session active */
+if(sessionStorage.getItem(SESSION_KEY) === "1"){
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("app").classList.add("active");
+  bootstrap();
+}
+
+/* SW registration */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+</script>
+</body>
+</html>
